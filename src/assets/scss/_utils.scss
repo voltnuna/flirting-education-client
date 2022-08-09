@@ -1,0 +1,81 @@
+.float {
+  &-left {
+    float: left;
+  }
+  &-right {
+    float: right;
+  }
+  &-clear {
+    &::after {
+      display: block;
+      content: "";
+      clear: both;
+    }
+  }
+}
+
+.center-item {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-txt {
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.btn-slider {
+  width: 3.5rem;
+  height: 2rem;
+  background-color: #72767d;
+  border-radius: 10px;
+  & > input[type="checkbox"] {
+    display: inline-block;
+    border-radius: 50%;
+    width: 1.7rem;
+    height: 1.7rem;
+    background-color: #fff;
+    appearance: none;
+  }
+}
+
+.avoid--click {
+  pointer-events: none; //해당 요소는 click event target이 되지 않도록
+}
+
+//S: Mixin
+@mixin after($dis) {
+  &::after {
+    display: $dis;
+    content: "";
+    @content;
+  }
+}
+
+@mixin setPosition($pos, $top, $right, $bottom, $left) {
+  position: $pos;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin ellipsis($line, $height: 3em) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+  height: $height;
+}
+
+//이미지 bacseUrl
+@function imgUrl($filename) {
+  @return url("../images/#{$filename}");
+}

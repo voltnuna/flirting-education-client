@@ -1,11 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const InputForm = () => {
-  return (
-    <div>
-      
-    </div>
-  );
+  return <div>gkgkgkkg</div>;
 };
 
 export default InputForm;
