@@ -135,10 +135,10 @@ textarea,
 input {
   padding: 0.5rem 1rem;
   margin: 0;
-  border-width: 1px;
   box-sizing: border-box;
   font-size: 1.4rem;
   outline: none;
+  border: none;
 }
 input[type="text"],
 input[type="password"],
@@ -152,7 +152,8 @@ button {
   vertical-align: middle;
   margin: 0;
   line-height: 1;
-  border: 1px solid #000;
+  outline: none;
+
   border-radius: 2px;
   background-color: #fff;
   font-family: var(--font-family);
@@ -184,7 +185,7 @@ a:active {
 #root {
   width: 100%;
   min-height: 100%;
-  background-color: var(--darkest-gray);
+  background-color: #fff;
 }
 .App {
   height: 100vh;
