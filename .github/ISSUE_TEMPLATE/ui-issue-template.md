@@ -7,9 +7,8 @@ assignees: ''
 
 ---
 
-## 설명
+## Describe the issue
 
-## 작업 사항
+## Todo List
 - [ ] 작업내역1
 - [ ] 작업내역2
-
