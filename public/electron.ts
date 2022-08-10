@@ -6,8 +6,8 @@ let mainWindow: BrowserWindow;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 900,
+    width: 1350,
+    height: 775,
     center: true,
     kiosk: !isDev,
     resizable: true,
