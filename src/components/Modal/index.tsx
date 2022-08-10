@@ -5,7 +5,7 @@ interface Props {
   title: string;
   content: string;
   show: boolean;
-  footType: "regist" | "confirm" | "";
+  footType: "regist" | "confirm" | "etc";
   onCloseModalHandler: () => void;
 }
 
@@ -32,7 +32,7 @@ const Modal: FC<Props> = ({
                 {footType === "confirm" && (
                   <button
                     type="button"
-                    className="confirm"
+                    className="btn-confirm"
                     onClick={onCloseModalHandler}
                   >
                     확인

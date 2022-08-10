@@ -19,23 +19,9 @@
     color: var(--header-secondary);
   }
 
-  form div {
-    margin-bottom: 2.2rem;
-  }
-  form label {
-    display: block;
-    margin-bottom: 0.8rem;
-    font-size: 1.2rem;
-    color: var(--header-secondary);
-  }
-  input {
-    height: 4rem;
-  }
   button.fullsize {
     width: 100%;
     height: 4rem;
-    background-color: var(--primary-blue);
-    color: #fff;
   }
 }
 .guide-msg {
@@ -47,10 +33,12 @@
     color: #00aff4;
   }
 }
-@include media.tablet {
+
+/* @include media.tablet {
   .lounge {
     &-title span {
       display: inline-block;
     }
   }
 }
+ */

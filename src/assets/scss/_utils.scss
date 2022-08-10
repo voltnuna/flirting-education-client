@@ -14,18 +14,21 @@
   }
 }
 
-.center-item {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.center {
+  &-item {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-txt {
+    text-align: center;
+  }
 }
-.mr-center {
-  margin: 0 auto;
-}
-.center-txt {
-  text-align: center;
+.mg-t20 {
+  margin-top: 2rem;
 }
 
 .hidden {
