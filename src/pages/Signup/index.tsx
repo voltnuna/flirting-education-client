@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
-import Modal from "@components/Modal";
+import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
 
 const Signup = () => {
@@ -39,6 +39,10 @@ const Signup = () => {
     [email, password, nickname, setAlertMsg, onShowModal]
   );
 
+  /*   if (true) {
+    return <Navigate to="/channel" />;
+  } */
+
   return (
     <>
       <div className="center-item">
@@ -74,7 +78,7 @@ const Signup = () => {
               className="fullsize"
               onChangeHandler={onChangePassword}
             />
-            <div className="mg-t20">
+            <div style={{ marginTop: "2rem" }}>
               <button type="submit" className="fullsize">
                 계속하기
               </button>
@@ -86,7 +90,7 @@ const Signup = () => {
         </div>
       </div>
       {/* 입력 확인 모달 */}
-      <Modal
+      <AlertModal
         title="알림"
         footType="confirm"
         show={showAlertModal}

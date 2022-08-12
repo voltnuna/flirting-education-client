@@ -1,0 +1,91 @@
+@use '../variables' as var;
+@use '../mixin' as mixin;
+
+/* ul에(또는 그 역할을하는 요소에) 해당 클래스 추가 */
+.list-horizontal {
+  display: inline-flex;
+  height: 100%;
+  line-height: 4.8rem;
+
+  &__item {
+    display: inline-block;
+    height: 100%;
+    line-height: 4.8rem;
+    font-size: var.$font-size;
+  }
+  &__item a {
+    display: inline-block;
+    margin: 0 0.8rem;
+    padding: 1rem;
+    color: #b9bbbe;
+    line-height: 1;
+  }
+}
+
+.list-vertical {
+  height: 100%;
+  &__item {
+    color: #96989d;
+    padding: 0 2rem 0 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  &__item a:not(.center-vertical) {
+    display: inline-block;
+  }
+
+  &__item a {
+    width: 100%;
+    padding: 0.4rem;
+    padding-left: 1rem;
+    border-radius: 5px;
+    &:hover {
+      background-color: #3c3f45;
+    }
+  }
+
+  &__item.selected a {
+    background-color: #42464d;
+    color: #fff;
+    font-weight: 500;
+  }
+}
+
+/*  */
+.chatterlist {
+  position: relative;
+  @include mixin.setFlex(flex, space-between, center);
+  &:hover a {
+    background-color: #40444b;
+  }
+  margin-bottom: 1.2rem;
+  .util {
+    position: absolute;
+    left: 89%;
+  }
+  .util button {
+    background-color: #2f3136;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    margin-left: 1rem;
+  }
+}
+
+.profile-img {
+  position: relative;
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  border: 2px solid var(--primary-green);
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    @include mixin.setPosition(absolute, 0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 50%;
+  }
+}

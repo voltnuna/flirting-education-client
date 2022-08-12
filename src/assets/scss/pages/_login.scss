@@ -1,4 +1,4 @@
-@use '../media-query' as media;
+@use '../variables' as var;
 
 .login--container {
   width: 40%;
@@ -14,7 +14,7 @@
     color: var(--header-primary);
   }
   .title h3 {
-    font-size: 1.6rem;
+    font-size: var.$font-size;
     margin-bottom: 2.3rem;
     color: var(--header-secondary);
   }
@@ -33,12 +33,3 @@
     color: #00aff4;
   }
 }
-
-/* @include media.tablet {
-  .lounge {
-    &-title span {
-      display: inline-block;
-    }
-  }
-}
- */

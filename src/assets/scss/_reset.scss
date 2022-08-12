@@ -81,9 +81,6 @@ video {
   margin: 0;
   padding: 0;
   border: 0;
-  font-family: var(--font-family);
-  font-size: var(--font-size);
-  font-weight: inherit;
   vertical-align: baseline;
   box-sizing: border-box;
 }
@@ -107,7 +104,11 @@ body {
   width: 100%;
   min-height: 100vh;
   height: 100vh;
+
+  font-family: var(--font-family);
   font-size: var(--font-size);
+  font-weight: inherit;
+
   word-break: keep-all;
   line-height: 1.5;
   text-size-adjust: none;
@@ -153,9 +154,9 @@ button {
   margin: 0;
   line-height: 1;
   outline: none;
-
+  background-color: transparent;
   border-radius: 2px;
-  background-color: #fff;
+  /*   background-color: #fff; */
   font-family: var(--font-family);
   cursor: pointer;
   transition-property: background-color, border-color, color;
@@ -187,6 +188,16 @@ a:active {
   min-height: 100%;
   background-color: #fff;
 }
+strong,
+span,
+a,
+p,
+input,
+button {
+  font-size: inherit;
+  color: inherit;
+}
+
 .App {
   height: 100vh;
 }

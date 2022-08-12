@@ -1,3 +1,5 @@
+@use '../variables' as var;
+
 .link {
   background-color: transparent;
   color: #00aff4;
@@ -8,11 +10,11 @@
   height: 3.8rem;
   color: #fff;
   background-color: var(--primary-blue);
+  font-size: var.$font-size;
 }
-/* Size */
 
-/* Color */
 button[type="submit"] {
   background-color: var(--primary-blue);
   color: #fff;
+  font-size: var.$font-size;
 }

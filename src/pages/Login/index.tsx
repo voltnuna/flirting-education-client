@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
-import Modal from "@components/Modal";
 import InputForm from "@components/InputForm";
+import AlertModal from "@components/AlertModal";
 
 const Login = () => {
   const [email, onChangeEamil] = useInput("");
@@ -36,6 +36,10 @@ const Login = () => {
     setshowAlertModal(false);
   }, [setShowPwModal]);
 
+  /*   if (true) {
+    return <Navigate to="/channel" />;
+  } */
+
   return (
     <>
       <div className="center-item">
@@ -68,7 +72,7 @@ const Login = () => {
                 비밀번호를 잊으셨나요?
               </button>
             </p>
-            <div className="mg-t20">
+            <div style={{ marginTop: "2rem" }}>
               <button type="submit" className="fullsize">
                 로그인
               </button>
@@ -80,7 +84,7 @@ const Login = () => {
         </div>
       </div>
       {/* 비밀번호 찾기 모달 */}
-      <Modal
+      <AlertModal
         title="이메일 전송 완료"
         footType="confirm"
         show={showPwModal}
@@ -89,7 +93,7 @@ const Login = () => {
       />
 
       {/* 입력 확인 모달 */}
-      <Modal
+      <AlertModal
         title="알림"
         footType="confirm"
         show={showAlertModal}
