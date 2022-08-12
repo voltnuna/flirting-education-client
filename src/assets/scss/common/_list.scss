@@ -5,10 +5,12 @@
   display: inline-flex;
   height: 100%;
   line-height: 4.8rem;
+
   &__item {
     display: inline-block;
     height: 100%;
     line-height: 4.8rem;
+    font-size: var.$font-size;
   }
   &__item a {
     display: inline-block;
@@ -16,10 +18,31 @@
     padding: 1rem;
     color: #b9bbbe;
     line-height: 1;
-    font-size: var.$font-size;
   }
 }
 
 .list-title {
+  font-weight: 600;
+  color: #fff;
   font-size: var.$font-size;
+}
+
+.list-vertical {
+  &__item {
+    color: #96989d;
+    padding: 0 2rem 0 1rem;
+    margin-bottom: 0.4rem;
+  }
+  &__item.selected a {
+    background-color: #42464d;
+    color: #fff;
+    font-weight: 500;
+  }
+  &__item a {
+    display: inline-block;
+    width: 100%;
+    padding: 0.4rem;
+    padding-left: 1rem;
+    border-radius: 3px;
+  }
 }

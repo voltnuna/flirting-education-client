@@ -10,10 +10,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Workspace />} />
+        <Route path="/channel" element={<Workspace />}></Route>
+        <Route path="/channel/:channel" element={<Workspace />}></Route>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LogIn />} />
-        <Route path="/" element={<LogIn />}></Route>
+        <Route path="/" element={<Workspace />}></Route>
       </Routes>
     </BrowserRouter>
   );

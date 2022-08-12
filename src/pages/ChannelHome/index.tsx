@@ -12,7 +12,7 @@ const ChannelHome = () => {
             { name: "차단", path: "block" },
           ]}
         />
-        <div></div>
+        <div className="channel-body">asdfasdf</div>
       </div>
     </>
   );

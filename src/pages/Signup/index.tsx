@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
@@ -38,6 +38,10 @@ const Signup = () => {
     },
     [email, password, nickname, setAlertMsg, onShowModal]
   );
+
+  if (true) {
+    return <Navigate to="/channel" />;
+  }
 
   return (
     <>

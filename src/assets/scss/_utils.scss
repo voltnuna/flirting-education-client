@@ -72,6 +72,12 @@
   left: $left;
 }
 
+@mixin setFlex($dis, $jus, $align) {
+  display: $dis;
+  justify-content: $jus;
+  align-items: $align;
+}
+
 @mixin ellipsis($line, $height: 3em) {
   display: -webkit-box;
   overflow: hidden;

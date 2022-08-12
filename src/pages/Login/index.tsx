@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import InputForm from "@components/InputForm";
 import AlertModal from "@components/AlertModal";
@@ -35,6 +35,10 @@ const Login = () => {
     setShowPwModal(false);
     setshowAlertModal(false);
   }, [setShowPwModal]);
+
+  if (true) {
+    return <Navigate to="/channel" />;
+  }
 
   return (
     <>
