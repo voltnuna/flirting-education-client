@@ -30,7 +30,6 @@ const Workspace = () => {
             <div className="head-label">
               <button> 대화 찾기 또는 시작하기 </button>
             </div>
-
             <div>
               <div
                 className={openList ? `r-panel-util opened` : `r-panel-util`}
@@ -40,7 +39,6 @@ const Workspace = () => {
                   +
                 </button>
               </div>
-
               <ul className="scrollarea list-vertical">
                 <li className="list-vertical__item selected">
                   <Link to="/">
@@ -63,7 +61,6 @@ const Workspace = () => {
               </ul>
             </div>
           </div>
-
           <div className="content-panel float-right">
             <ChannelHome />
           </div>

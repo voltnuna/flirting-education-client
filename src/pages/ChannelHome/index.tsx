@@ -1,5 +1,8 @@
-import Header from "@components/Header";
 import React from "react";
+import { Link } from "react-router-dom";
+import { IoSearch } from "react-icons/io5";
+import Header from "@components/Header";
+import ChatterList from "@components/ChatterList";
 
 const ChannelHome = () => {
   return (
@@ -12,7 +15,55 @@ const ChannelHome = () => {
             { name: "차단", path: "block" },
           ]}
         />
-        <div className="channel-body">asdfasdf</div>
+        <div className="channel-body float-clear">
+          <div className="channel-body__left float-left">
+            <div className="search-area">
+              <div className="search-form">
+                <input type="text" placeholder="검색하기" />
+                <button type="submit">
+                  <IoSearch size="16" />
+                </button>
+              </div>
+              <p>모든 친구 - 0명</p>
+            </div>
+            <div>
+              <ChatterList
+                myChatters={[
+                  {
+                    nickname: "김도은",
+                    email: "doeun@gmail.com",
+                    state: "online",
+                  },
+                  {
+                    nickname: "김도혁",
+                    email: "dooks@gmail.com",
+                    state: "online",
+                  },
+                  {
+                    nickname: "김도중",
+                    email: "dojoong@gmail.com",
+                    state: "online",
+                  },
+                  {
+                    nickname: "홍다나",
+                    email: "danaisback@gmail.com",
+                    state: "online",
+                  },
+                ]}
+              />
+            </div>
+          </div>
+          <div className="channel-body__right float-right">
+            <span className="h3">현재 활동 중</span>
+            <div>
+              <span className="h5">지금은 조용하네요...</span>
+              <p>
+                친구가 게임이나 음성 채팅과 같은 활동을 시작하면 여기에
+                표시돼요!
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

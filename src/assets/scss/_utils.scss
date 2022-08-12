@@ -1,5 +1,20 @@
+@use './mixin' as mixin;
+
 .hidden {
   display: none;
+}
+.in-a-row {
+  @include mixin.setFlex(inline-flex);
+}
+
+.h3 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 600;
+}
+.h5 {
+  color: #fff;
+  font-size: 1.7rem;
 }
 
 .float {
@@ -20,20 +35,20 @@
 
 .center {
   &-item {
+    @include mixin.setFlex(flex, center, center);
     width: 100%;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
-
+  &-vertical {
+    @include mixin.setFlex(flex, null, center);
+  }
   &-txt {
     text-align: center;
   }
 }
 
-.mg-t20 {
-  margin-top: 2rem;
+.underline {
+  border-bottom: 1px solid #42464d;
 }
 
 .btn-slider {
@@ -53,41 +68,4 @@
 
 .avoid--click {
   pointer-events: none; //해당 요소는 click event target이 되지 않도록
-}
-
-//S: Mixin
-@mixin after($dis) {
-  &::after {
-    display: $dis;
-    content: "";
-    @content;
-  }
-}
-
-@mixin setPosition($pos, $top, $right, $bottom, $left) {
-  position: $pos;
-  top: $top;
-  right: $right;
-  bottom: $bottom;
-  left: $left;
-}
-
-@mixin setFlex($dis, $jus, $align) {
-  display: $dis;
-  justify-content: $jus;
-  align-items: $align;
-}
-
-@mixin ellipsis($line, $height: 3em) {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: $line;
-  -webkit-box-orient: vertical;
-  height: $height;
-}
-
-//이미지 bacseUrl
-@function imgUrl($filename) {
-  @return url("../images/#{$filename}");
 }

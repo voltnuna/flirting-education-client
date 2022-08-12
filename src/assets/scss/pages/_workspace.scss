@@ -1,4 +1,5 @@
 @use '../variables' as var;
+@use "../mixin" as mixin;
 
 .left-panel {
   width: 7.2rem;
@@ -29,6 +30,7 @@
   height: 100%;
   .side-panel {
     width: 24rem;
+    width: 12.987%;
     height: 100%;
     background-color: var(--side-pen-gray);
     font-size: var.$font-size;
@@ -58,7 +60,7 @@
   }
 
   .content-panel {
-    width: calc(100% - 24rem);
+    width: 87.013%;
     background-color: var(--workspace-gray);
   }
 
@@ -67,9 +69,12 @@
     height: 4.8rem;
     box-shadow: var(--elevation-low);
     nav {
+      @include mixin.setFlex(flex, space-between, center);
+
       margin: 0 2rem;
     }
   }
+
   .list-vertical__item a span {
     padding-left: 0.4rem;
   }
@@ -86,10 +91,8 @@
     font-weight: 600;
     vertical-align: middle;
   }
+  @include mixin.setFlex(inline-flex, space-between, center);
 
-  display: inline-flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%;
   height: 4rem;
   margin: 1.6rem 0;
@@ -115,4 +118,29 @@
 
 .channel-body {
   font-size: var.$font-size;
+  &__left {
+    width: 73.973%;
+    height: 100%;
+    .search-area {
+    }
+    .search-area p {
+      margin: 1.6rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid
+        hsla(217, calc(var(--saturation-factor, 1) * 7.6%), 33.5%, 0.48);
+    }
+  }
+  &__right {
+    width: calc(26.027% - 1px);
+    height: 100%;
+    padding: 16px;
+    height: 100%;
+    border-left: 1px solid
+      hsla(217, calc(var(--saturation-factor, 1) * 7.6%), 33.5%, 0.48);
+  }
+
+  p {
+    font-size: 1.4rem;
+    color: #b9bbbe;
+  }
 }

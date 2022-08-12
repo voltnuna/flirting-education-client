@@ -39,9 +39,9 @@ const Signup = () => {
     [email, password, nickname, setAlertMsg, onShowModal]
   );
 
-  if (true) {
+  /*   if (true) {
     return <Navigate to="/channel" />;
-  }
+  } */
 
   return (
     <>
@@ -78,7 +78,7 @@ const Signup = () => {
               className="fullsize"
               onChangeHandler={onChangePassword}
             />
-            <div className="mg-t20">
+            <div style={{ marginTop: "2rem" }}>
               <button type="submit" className="fullsize">
                 계속하기
               </button>

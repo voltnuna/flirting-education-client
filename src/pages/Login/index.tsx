@@ -36,9 +36,9 @@ const Login = () => {
     setshowAlertModal(false);
   }, [setShowPwModal]);
 
-  if (true) {
+  /*   if (true) {
     return <Navigate to="/channel" />;
-  }
+  } */
 
   return (
     <>
@@ -72,7 +72,7 @@ const Login = () => {
                 비밀번호를 잊으셨나요?
               </button>
             </p>
-            <div className="mg-t20">
+            <div style={{ marginTop: "2rem" }}>
               <button type="submit" className="fullsize">
                 로그인
               </button>

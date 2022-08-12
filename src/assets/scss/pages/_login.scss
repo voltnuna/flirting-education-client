@@ -1,5 +1,4 @@
 @use '../variables' as var;
-@use '../media-query' as media;
 
 .login--container {
   width: 40%;
@@ -34,12 +33,3 @@
     color: #00aff4;
   }
 }
-
-/* @include media.tablet {
-  .lounge {
-    &-title span {
-      display: inline-block;
-    }
-  }
-}
- */

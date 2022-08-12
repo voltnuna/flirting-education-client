@@ -10,8 +10,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/channel" element={<Workspace />}></Route>
         <Route path="/channel/:channel" element={<Workspace />}></Route>
+        <Route path="/channel" element={<Workspace />}></Route>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/" element={<Workspace />}></Route>
