@@ -1,14 +1,14 @@
 import React, { FC } from "react";
 import { RiChatNewFill } from "react-icons/ri";
 import { CgInbox } from "react-icons/cg";
-import { BsThreeDotsVertical, BsFillChatLeftDotsFill } from "react-icons/bs";
+import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import gravatar from "gravatar";
 interface Props {
   myChatters: {
     nickname: string;
     email: string;
-    state: "online" | "offline" | "sleep";
+    state: string;
   }[];
 }
 
@@ -34,12 +34,12 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
                 </span>
                 <span>{chatter.nickname}</span>
               </Link>
-              <div className="in-a-row">
+              <div className="util in-a-row">
                 <button type="button">
-                  <BsFillChatLeftDotsFill />
+                  <BsChatDotsFill size="15" color="#b9bbbe" />
                 </button>
                 <button type="button">
-                  <BsThreeDotsVertical />
+                  <BsThreeDotsVertical size="15" color="#b9bbbe" />
                 </button>
               </div>
             </li>

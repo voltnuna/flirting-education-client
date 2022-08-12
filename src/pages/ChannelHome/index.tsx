@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import Header from "@components/Header";
 import ChatterList from "@components/ChatterList";
+import { dummyUserData } from "@assets/data";
 
 const ChannelHome = () => {
   return (
@@ -26,31 +27,8 @@ const ChannelHome = () => {
               </div>
               <p>모든 친구 - 0명</p>
             </div>
-            <div>
-              <ChatterList
-                myChatters={[
-                  {
-                    nickname: "김도은",
-                    email: "doeun@gmail.com",
-                    state: "online",
-                  },
-                  {
-                    nickname: "김도혁",
-                    email: "dooks@gmail.com",
-                    state: "online",
-                  },
-                  {
-                    nickname: "김도중",
-                    email: "dojoong@gmail.com",
-                    state: "online",
-                  },
-                  {
-                    nickname: "홍다나",
-                    email: "danaisback@gmail.com",
-                    state: "online",
-                  },
-                ]}
-              />
+            <div style={{ height: "calc(100vh - 270px)", overflow: "auto" }}>
+              <ChatterList myChatters={dummyUserData} />
             </div>
           </div>
           <div className="channel-body__right float-right">

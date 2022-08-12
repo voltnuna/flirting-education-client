@@ -23,6 +23,7 @@
 }
 
 .list-vertical {
+  height: 100%;
   &__item {
     color: #96989d;
     padding: 0 2rem 0 1rem;
@@ -52,9 +53,22 @@
 
 /*  */
 .chatterlist {
+  position: relative;
   @include mixin.setFlex(flex, space-between, center);
   &:hover a {
     background-color: #40444b;
+  }
+  margin-bottom: 1.2rem;
+  .util {
+    position: absolute;
+    left: 89%;
+  }
+  .util button {
+    background-color: #2f3136;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    margin-left: 1rem;
   }
 }
 
