@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { RecoilRoot } from "recoil";
-import "../src/assets/scss/index.scss";
+import App from "@layouts/App/App";
+import "@assets/scss/index.scss";
+import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

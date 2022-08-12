@@ -1,0 +1,40 @@
+.left-panel {
+  width: 7.2rem;
+  height: 100%;
+  background-color: var(--darkest-gray);
+
+  ul {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  li {
+    width: 4.8rem;
+    height: 4.8rem;
+    border-radius: 50%;
+    background-color: #36393f;
+    text-align: center;
+    margin: 1rem 0;
+    &:hover {
+      background-color: var(--primary-blue);
+    }
+  }
+}
+
+.right-panel {
+  width: calc(100% - 7.2rem);
+  height: 100%;
+  .side-panel {
+    width: 24rem;
+    height: 100%;
+    background-color: var(--side-pen-gray);
+  }
+  .content-panel {
+    width: calc(100% - 24rem);
+    background-color: var(--workspace-gray);
+  }
+  header {
+    width: 100%;
+    height: 4.8rem;
+  }
+}

@@ -9,7 +9,7 @@ interface Props {
   onCloseModalHandler: () => void;
 }
 
-const Modal: FC<Props> = ({
+const AlertModal: FC<Props> = ({
   title,
   footType,
   content,
@@ -47,4 +47,4 @@ const Modal: FC<Props> = ({
   );
 };
 
-export default Modal;
+export default AlertModal;

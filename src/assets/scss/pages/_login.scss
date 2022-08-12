@@ -1,3 +1,4 @@
+@use '../variables' as var;
 @use '../media-query' as media;
 
 .login--container {
@@ -14,7 +15,7 @@
     color: var(--header-primary);
   }
   .title h3 {
-    font-size: 1.6rem;
+    font-size: var.$font-size;
     margin-bottom: 2.3rem;
     color: var(--header-secondary);
   }

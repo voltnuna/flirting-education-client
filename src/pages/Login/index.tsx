@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import useInput from "@hooks/useInput";
-import Modal from "@components/Modal";
 import InputForm from "@components/InputForm";
+import AlertModal from "@components/AlertModal";
 
 const Login = () => {
   const [email, onChangeEamil] = useInput("");
@@ -80,7 +80,7 @@ const Login = () => {
         </div>
       </div>
       {/* 비밀번호 찾기 모달 */}
-      <Modal
+      <AlertModal
         title="이메일 전송 완료"
         footType="confirm"
         show={showPwModal}
@@ -89,7 +89,7 @@ const Login = () => {
       />
 
       {/* 입력 확인 모달 */}
-      <Modal
+      <AlertModal
         title="알림"
         footType="confirm"
         show={showAlertModal}

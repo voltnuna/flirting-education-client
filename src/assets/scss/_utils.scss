@@ -1,3 +1,7 @@
+.hidden {
+  display: none;
+}
+
 .float {
   &-left {
     float: left;
@@ -27,12 +31,9 @@
     text-align: center;
   }
 }
+
 .mg-t20 {
   margin-top: 2rem;
-}
-
-.hidden {
-  display: none;
 }
 
 .btn-slider {

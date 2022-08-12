@@ -1,0 +1,25 @@
+@use '../variables' as var;
+
+/* ul에(또는 그 역할을하는 요소에) 해당 클래스 추가 */
+.list-horizontal {
+  display: inline-flex;
+  height: 100%;
+  line-height: 4.8rem;
+  &__item {
+    display: inline-block;
+    height: 100%;
+    line-height: 4.8rem;
+  }
+  &__item a {
+    display: inline-block;
+    margin: 0 0.8rem;
+    padding: 1rem;
+    color: #b9bbbe;
+    line-height: 1;
+    font-size: var.$font-size;
+  }
+}
+
+.list-title {
+  font-size: var.$font-size;
+}

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import useInput from "@hooks/useInput";
-import Modal from "@components/Modal";
+import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
 
 const Signup = () => {
@@ -86,7 +86,7 @@ const Signup = () => {
         </div>
       </div>
       {/* 입력 확인 모달 */}
-      <Modal
+      <AlertModal
         title="알림"
         footType="confirm"
         show={showAlertModal}
