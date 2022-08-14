@@ -1,7 +1,7 @@
 import { IUser, IWorkspace } from "../typings/db";
 import { atom } from "recoil";
 
-export const user = atom<IUser>({
+const user = atom<IUser>({
   key: "user",
   default: {
     id: -1,
@@ -10,3 +10,5 @@ export const user = atom<IUser>({
     Workspaces: [],
   },
 });
+
+export default user;

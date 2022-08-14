@@ -71,7 +71,6 @@
     box-shadow: var(--elevation-low);
     nav {
       @include mixin.setFlex(flex, space-between, center);
-
       margin: 0 2rem;
     }
   }

@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import InputForm from "@components/InputForm";
 import AlertModal from "@components/AlertModal";
+import axios from "axios";
 
 const Login = () => {
   const [email, onChangeEamil] = useInput("");
@@ -23,6 +24,17 @@ const Login = () => {
         setshowAlertModal(true);
         return;
       }
+
+      axios
+        .post(
+          "http://localhost:3095/api/users/login",
+          { email, password },
+          {
+            withCredentials: true,
+          }
+        )
+        .then((response) => {})
+        .catch((error) => {});
     },
     [email, password, setAlertMsg]
   );
@@ -36,9 +48,9 @@ const Login = () => {
     setshowAlertModal(false);
   }, [setShowPwModal]);
 
-  /*   if (true) {
-    return <Navigate to="/channel" />;
-  } */
+  if (!true) {
+    return <Navigate to="/workspace/chatterbox/channel/일반" />;
+  }
 
   return (
     <>

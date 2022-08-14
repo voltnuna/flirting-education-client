@@ -3,6 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
+import axios from "axios";
 
 const Signup = () => {
   const [email, onChangeEamil] = useInput("");
@@ -10,6 +11,8 @@ const Signup = () => {
   const [nickname, onChangeNickname] = useInput("");
   const [showAlertModal, setshowAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
+  const [signUpError, setSignUpError] = useState("");
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const onShowModal = useCallback(() => {
     setshowAlertModal(true);
@@ -19,28 +22,47 @@ const Signup = () => {
     setshowAlertModal(false);
   }, [setshowAlertModal]);
 
+  const onFormCheckHandler = useCallback(() => {
+    if (email.length === 0) {
+      setAlertMsg("이메일");
+      onShowModal();
+      return false;
+    } else if (nickname.length === 0) {
+      setAlertMsg("닉네임");
+      onShowModal();
+      return false;
+    } else if (password.length === 0) {
+      setAlertMsg("비밀번호");
+      onShowModal();
+      return false;
+    }
+  }, [email, password, nickname, setAlertMsg, onShowModal]);
+
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (email.length === 0) {
-        setAlertMsg("이메일");
-        onShowModal();
-        return;
-      } else if (nickname.length === 0) {
-        setAlertMsg("닉네임");
-        onShowModal();
-        return;
-      } else if (password.length === 0) {
-        setAlertMsg("비밀번호");
-        onShowModal();
-        return;
-      }
+      if (onFormCheckHandler() === false) return;
+      axios
+        .post("http://localhost:3095/api/users", {
+          email,
+          nickname,
+          password,
+        })
+        .then((response) => {
+          console.log(response);
+          setSignUpSuccess(true);
+        })
+        .catch((error) => {
+          console.log(error.response);
+          setSignUpError(error.response.data);
+        })
+        .finally(() => {});
     },
-    [email, password, nickname, setAlertMsg, onShowModal]
+    [email, password, nickname]
   );
 
   /*   if (true) {
-    return <Navigate to="/channel" />;
+    return <Navigate to="/workspace/channel" />;
   } */
 
   return (

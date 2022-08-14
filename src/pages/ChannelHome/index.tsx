@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import Header from "@components/Header";
@@ -6,11 +6,15 @@ import ChatterList from "@components/ChatterList";
 import { dummyUserData } from "@assets/data";
 
 const ChannelHome = () => {
+  const onSwitchPage = useCallback(() => {
+    console.log("");
+  }, []);
   return (
     <>
       <div>
         <Header
           title="친구"
+          onSwitchPage={onSwitchPage}
           menus={[
             { name: "전체", path: "all" },
             { name: "차단", path: "block" },
@@ -25,9 +29,12 @@ const ChannelHome = () => {
                   <IoSearch size="16" />
                 </button>
               </div>
-              <p>모든 친구 - 0명</p>
+              <p>모든 친구 - {dummyUserData.length}명</p>
             </div>
-            <div style={{ height: "calc(100vh - 270px)", overflow: "auto" }}>
+            <div
+              className="scrollbar"
+              style={{ height: "calc(100vh - 270px)", overflowY: "auto" }}
+            >
               <ChatterList myChatters={dummyUserData} />
             </div>
           </div>

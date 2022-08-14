@@ -24,7 +24,8 @@
       "@layouts/*": ["src/layouts/*"],
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
-      "@typings": ["src/typings/*"]
+      "@typings/*": ["src/typings/*"],
+      "@states/*": ["src/states/*"]
     }
   },
   "include": ["src"]

@@ -1,9 +1,7 @@
 import React, { FC } from "react";
-import { RiChatNewFill } from "react-icons/ri";
-import { CgInbox } from "react-icons/cg";
+import gravatar from "gravatar";
 import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import gravatar from "gravatar";
 interface Props {
   myChatters: {
     nickname: string;
@@ -22,7 +20,10 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
               className="list-vertical__item chatterlist"
               key={`$chatter--${idx}`}
             >
-              <Link to="/" className="center-vertical">
+              <Link
+                to="/workspace/chatterbox/dms/:id/chats"
+                className="center-vertical"
+              >
                 <span className="profile-img">
                   <img
                     src={gravatar.url(chatter.email, {

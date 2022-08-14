@@ -318,6 +318,7 @@ module.exports = function(webpackEnv) {
         "@pages": path.resolve(__dirname, "../src/pages"),
         "@utils": path.resolve(__dirname, "../src/utils"),
         "@typings": path.resolve(__dirname, "../src/typings"),
+        "@states": path.resolve(__dirname, "../src/states"),
         // Support React Native Web
         // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
         "react-native": "react-native-web",
@@ -759,5 +760,16 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
+    devServer: {
+      historyApiFallback: true, // react router
+      port: 3090,
+      publicPath: "/dist/",
+      proxy: {
+        "/api/": {
+          target: "http://localhost:3095",
+          changeOrigin: true,
+        },
+      },
+    },
   };
 };
