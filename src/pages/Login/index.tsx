@@ -1,42 +1,79 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import InputForm from "@components/InputForm";
 import AlertModal from "@components/AlertModal";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import fetcher from "@utils/fetcher";
+
+import { IUser } from "@typings/db";
 
 const Login = () => {
+  const queryClient = useQueryClient();
+
   const [email, onChangeEamil] = useInput("");
   const [password, onChangePassword] = useInput("");
   const [showPwModal, setShowPwModal] = useState(false);
   const [showAlertModal, setshowAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
 
+  const {
+    isLoading,
+    isSuccess,
+    status,
+    isError,
+    data,
+    error,
+  } = useQuery("user", () =>
+    fetcher({ queryKey: "http://localhost:3095/api/users" })
+  );
+
+  const mutation = useMutation<
+    IUser,
+    AxiosError,
+    { email: string; password: string }
+  >(
+    "user",
+    (data) =>
+      axios
+        .post("http://localhost:3095/api/users/login", data, {
+          withCredentials: true,
+        })
+        .then((response) => response.data),
+    {
+      onMutate() {
+        //       setLogInError(false);
+      },
+      onSuccess() {
+        queryClient.refetchQueries("user");
+      },
+      onError(error) {
+        // setLogInError(error.response?.data?.code === 401);
+      },
+    }
+  );
+
+  const onFormCheckHandler = useCallback(() => {
+    if (email.length === 0) {
+      setAlertMsg("이메일");
+      setshowAlertModal(true);
+      return false;
+    } else if (password.length === 0) {
+      setAlertMsg("비밀번호");
+      setshowAlertModal(true);
+      return false;
+    }
+    return true;
+  }, [email, password, setshowAlertModal, setAlertMsg]);
+
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (email.length === 0) {
-        setAlertMsg("이메일");
-        setshowAlertModal(true);
-        return;
-      } else if (password.length === 0) {
-        setAlertMsg("비밀번호");
-        setshowAlertModal(true);
-        return;
-      }
-
-      axios
-        .post(
-          "http://localhost:3095/api/users/login",
-          { email, password },
-          {
-            withCredentials: true,
-          }
-        )
-        .then((response) => {})
-        .catch((error) => {});
+      if (!onFormCheckHandler()) return;
+      mutation.mutate({ email, password });
     },
-    [email, password, setAlertMsg]
+    [email, password, mutation, onFormCheckHandler]
   );
 
   const onShowModal = useCallback(() => {
@@ -48,7 +85,11 @@ const Login = () => {
     setshowAlertModal(false);
   }, [setShowPwModal]);
 
-  if (!true) {
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
+
+  if (data) {
     return <Navigate to="/workspace/chatterbox/channel/일반" />;
   }
 

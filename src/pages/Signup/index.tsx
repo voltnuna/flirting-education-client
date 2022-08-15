@@ -3,14 +3,32 @@ import { Link, Navigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
-import axios from "axios";
+import fetcher from "@utils/fetcher";
+import { IUser } from "@typings/db";
+
+import axios, { AxiosError } from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const Signup = () => {
+  const {
+    isLoading,
+    isSuccess,
+    status,
+    isError,
+    data,
+    error,
+  } = useQuery("user", () =>
+    fetcher({ queryKey: "http://localhost:3095/api/users" })
+  );
+
   const [email, onChangeEamil] = useInput("");
   const [password, onChangePassword] = useInput("");
+  const [passwordCheck, onChangePasswordChk, setPasswordCheck] = useInput("");
+
   const [nickname, onChangeNickname] = useInput("");
   const [showAlertModal, setshowAlertModal] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
+  const [mismatchError, setMismatchError] = useState(false);
   const [signUpError, setSignUpError] = useState("");
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
@@ -22,6 +40,13 @@ const Signup = () => {
     setshowAlertModal(false);
   }, [setshowAlertModal]);
 
+  const onChangePasswordCheck = useCallback(
+    (e: any) => {
+      setPasswordCheck(e.target.value);
+      setMismatchError(e.target.value !== password);
+    },
+    [password, setPasswordCheck]
+  );
   const onFormCheckHandler = useCallback(() => {
     if (email.length === 0) {
       setAlertMsg("이메일");
@@ -35,36 +60,55 @@ const Signup = () => {
       setAlertMsg("비밀번호");
       onShowModal();
       return false;
+    } else if (passwordCheck.length === 0) {
+      setAlertMsg("비밀번호 확인");
+      onShowModal();
+      return false;
     }
-  }, [email, password, nickname, setAlertMsg, onShowModal]);
+    return true;
+  }, [email, password, nickname, passwordCheck, setAlertMsg, onShowModal]);
+
+  const mutation = useMutation<
+    IUser,
+    AxiosError,
+    { email: string; password: string; nickname: string }
+  >(
+    "user",
+    (data) =>
+      axios
+        .post("http://localhost:3095/api/users", data)
+        .then((response) => response.data),
+    {
+      onMutate() {
+        setSignUpError("");
+        setSignUpSuccess(false);
+      },
+      onSuccess() {
+        setSignUpSuccess(true);
+      },
+      onError(error) {
+        setSignUpError(error.response?.data);
+      },
+    }
+  );
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (onFormCheckHandler() === false) return;
-      axios
-        .post("http://localhost:3095/api/users", {
-          email,
-          nickname,
-          password,
-        })
-        .then((response) => {
-          console.log(response);
-          setSignUpSuccess(true);
-        })
-        .catch((error) => {
-          console.log(error.response);
-          setSignUpError(error.response.data);
-        })
-        .finally(() => {});
+      if (!onFormCheckHandler()) return;
+      if (!mismatchError && nickname)
+        mutation.mutate({ email, nickname, password });
     },
-    [email, password, nickname]
+    [email, password, nickname, mismatchError, mutation, onFormCheckHandler]
   );
 
-  /*   if (true) {
-    return <Navigate to="/workspace/channel" />;
-  } */
+  if (isLoading) {
+    return <div>로딩중...</div>;
+  }
 
+  if (data) {
+    return <Navigate to="/workspace/chatterbox/channel/일반" />;
+  }
   return (
     <>
       <div className="center-item">
@@ -99,6 +143,15 @@ const Signup = () => {
               placeholder="비밀번호를 입력하세요."
               className="fullsize"
               onChangeHandler={onChangePassword}
+            />
+            <InputForm
+              id="signupPasswordChk"
+              inputType="password"
+              labelName="비밀번호 확인"
+              value={passwordCheck}
+              placeholder="비밀번호를 입력하세요."
+              className="fullsize"
+              onChangeHandler={onChangePasswordChk}
             />
             <div style={{ marginTop: "2rem" }}>
               <button type="submit" className="fullsize">
