@@ -9,5 +9,5 @@ assignees: kimdovi-dev
 
 ##Todo List
 
-- [] 작업내역
-- [] 작업내역
+- [ ] 작업내역
+- [ ] 작업내역
