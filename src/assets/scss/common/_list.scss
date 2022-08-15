@@ -13,9 +13,9 @@
     line-height: 4.8rem;
     font-size: var.$font-size;
   }
-  &__item a {
+  &__item button {
     display: inline-block;
-    margin: 0 0.8rem;
+    margin-left: 0.8rem;
     padding: 1rem;
     color: #b9bbbe;
     line-height: 1;
@@ -23,7 +23,6 @@
 }
 
 .list-vertical {
-  height: 100%;
   &__item {
     color: #96989d;
     padding: 0 2rem 0 1rem;
@@ -61,7 +60,7 @@
   margin-bottom: 1.2rem;
   .util {
     position: absolute;
-    left: 89%;
+    left: 90%;
   }
   .util button {
     background-color: #2f3136;
@@ -70,6 +69,19 @@
     height: 35px;
     margin-left: 1rem;
   }
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: #202225;
+  border-radius: 10px;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background-color: #42464d;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px #202225;
 }
 
 .profile-img {

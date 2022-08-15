@@ -1,14 +1,17 @@
-import React, { FC } from "react";
-import { Link } from "react-router-dom";
+import React, { FC, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { RiChatNewFill } from "react-icons/ri";
 import { CgInbox } from "react-icons/cg";
 
 interface Props {
-  menus: { path?: string; name: string }[];
+  menus?: { path?: string; name: string }[];
   title?: string;
+  onSwitchPage?: () => void;
 }
 
-const Header: FC<Props> = ({ title, menus }) => {
+const Header: FC<Props> = ({ title, menus, onSwitchPage }) => {
+  const navi = useNavigate();
+
   return (
     <>
       <header>
@@ -19,10 +22,17 @@ const Header: FC<Props> = ({ title, menus }) => {
                 <span className="h5">{title}</span>
               </li>
             )}
-            {menus.map((menu, idx) => {
+            {menus?.map((menu, idx) => {
               return (
                 <li key={`header--${idx}`} className="list-horizontal__item">
-                  <Link to={`channel/${menu.path}`}>{menu.name}</Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSwitchPage && onSwitchPage();
+                    }}
+                  >
+                    {menu.name}
+                  </button>
                 </li>
               );
             })}
