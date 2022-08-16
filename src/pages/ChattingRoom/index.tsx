@@ -93,10 +93,10 @@ const ChattingRoom = () => {
                     s: "70px",
                     d: "monsterid",
                   })}
-                  alt={`홍수희`}
+                  alt={`김테스터`}
                 />
               </div>
-              <span className="profile-username">홍수희</span>
+              <span className="profile-username">김테스터</span>
             </div>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis

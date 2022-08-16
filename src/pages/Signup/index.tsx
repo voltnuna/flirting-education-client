@@ -107,7 +107,7 @@ const Signup = () => {
   }
 
   if (data) {
-    return <Navigate to="/workspace/chatterbox/channel/일반" />;
+    return <Navigate to="/workspace" />;
   }
   return (
     <>

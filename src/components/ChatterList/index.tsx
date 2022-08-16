@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import gravatar from "gravatar";
 import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 interface Props {
   myChatters: {
     nickname: string;
@@ -11,6 +11,9 @@ interface Props {
 }
 
 const ChatterList: FC<Props> = ({ myChatters }) => {
+  const { workspace } = useParams<{
+    workspace?: string;
+  }>();
   return (
     <>
       <ul className="list-vertical">
@@ -21,7 +24,7 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
               key={`$chatter--${idx}`}
             >
               <Link
-                to="/workspace/chatterbox/dms/:id/chats"
+                to={`/workspace/${workspace}/dms/:id/chats`}
                 className="center-vertical"
               >
                 <span className="profile-img">

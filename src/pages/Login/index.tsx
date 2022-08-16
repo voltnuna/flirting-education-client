@@ -23,7 +23,7 @@ const Login = () => {
     isSuccess,
     status,
     isError,
-    data,
+    data: userData,
     error,
   } = useQuery("user", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
@@ -35,9 +35,9 @@ const Login = () => {
     { email: string; password: string }
   >(
     "user",
-    (data) =>
+    (userData) =>
       axios
-        .post("http://localhost:3095/api/users/login", data, {
+        .post("http://localhost:3095/api/users/login", userData, {
           withCredentials: true,
         })
         .then((response) => response.data),
@@ -89,8 +89,8 @@ const Login = () => {
     return <div>로딩중...</div>;
   }
 
-  if (data) {
-    return <Navigate to="/workspace/chatterbox/channel/일반" />;
+  if (userData) {
+    return <Navigate to="/workspace" />;
   }
 
   return (

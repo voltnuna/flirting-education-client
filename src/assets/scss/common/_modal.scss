@@ -3,7 +3,7 @@
 
 .modal-bg {
   @include mixin.setPosition(fixed, 0, 0, 0, 0);
-  background-color: rgba($color: #ddd, $alpha: 0.7);
+  background-color: rgba($color: #030303, $alpha: 0.7);
 }
 
 .modal-wrap {
@@ -49,7 +49,7 @@
   }
 
   &__footer {
-    padding: 1rem;
+    padding: 1rem 2rem;
     width: 100%;
     height: 10%;
     text-align: right;
