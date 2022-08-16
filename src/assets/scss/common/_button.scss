@@ -12,7 +12,28 @@
   background-color: var(--primary-blue);
   font-size: var.$font-size;
 }
+.btn-regist {
+  width: 9.6rem;
+  height: 3.8rem;
+  color: #fff;
+  background-color: var(--primary-green);
+  font-size: var.$font-size;
+}
+.btn-close {
+  font-size: var.$font-size;
+}
+.btn-cancel {
+  width: 9.6rem;
+  height: 3.8rem;
+  color: #000;
+  background-color: #fff;
 
+  border: 1px solid var(--primary-green);
+  font-size: var.$font-size;
+}
+button + button {
+  margin-left: 1rem;
+}
 button[type="submit"] {
   background-color: var(--primary-blue);
   color: #fff;

@@ -6,6 +6,7 @@ input.fullsize {
   height: 4rem;
   border-radius: 0.3rem;
   font-size: var.$font-size;
+  color: #202225;
 }
 
 .input-form {
@@ -37,7 +38,8 @@ input.fullsize {
     font-size: 1.5rem;
   }
   button[type="submit"] {
-    @include mixin.setPosition(absolute, 10px, 10px);
+    @include mixin.setPosition(absolute, null, 10px);
     background-color: transparent;
+    transform: translateY(calc(50% - 25px));
   }
 }

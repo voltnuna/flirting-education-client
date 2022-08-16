@@ -15,6 +15,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<LogIn />} />
           <Route path="/" element={<LogIn />}></Route>
+          <Route path="/workspace" element={<Workspace />}></Route>
           <Route
             path="/workspace/:workspace/dms/:id/chats"
             element={<Workspace />}
