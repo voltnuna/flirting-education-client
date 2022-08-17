@@ -1,17 +1,20 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, Navigate, Routes, Route, useNavigate } from "react-router-dom";
-import useToggle from "@hooks/useToggle";
-import loadable from "@loadable/component";
-import { BiHomeHeart } from "react-icons/bi";
-import { MdOutlineAdd } from "react-icons/md";
-import axios, { AxiosError } from "axios";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-
 import { useParams } from "react-router";
-import ChannelList from "@components/ChannelList";
+
+import useToggle from "@hooks/useToggle";
+import useInput from "@hooks/useInput";
+import loadable from "@loadable/component";
 import fetcher from "@utils/fetcher";
 import { IChannel, IUser, IWorkspace } from "@typings/db";
-import useInput from "@hooks/useInput";
+
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import axios, { AxiosError } from "axios";
+
+import { BiHomeHeart } from "react-icons/bi";
+import { MdOutlineAdd } from "react-icons/md";
+
+const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
 const ChattingRoom = loadable(() => import("@pages/ChattingRoom"));
 const ChannelHome = loadable(() => import("@pages/ChannelHome"));
@@ -21,6 +24,7 @@ const Workspace = () => {
   const { workspace } = useParams<{
     workspace?: string;
   }>();
+
   const { isLoading, data: userData } = useQuery("user", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
@@ -28,11 +32,14 @@ const Workspace = () => {
   const { data: workspacesData } = useQuery<IWorkspace[]>("workspaces", () =>
     fetcher({ queryKey: "http://localhost:3095/api/workspaces" })
   );
+
   const { data: channelData } = useQuery<IChannel[]>(
     ["workspace", workspace, "channel"],
     () =>
       fetcher({
-        queryKey: `http://localhost:3095/api/workspaces/${workspace}/channels`,
+        queryKey: `http://localhost:3095/api/workspaces/${
+          workspace ? workspace : "chatterbox"
+        }/channels`,
       }),
     {
       enabled: !!userData,
@@ -78,6 +85,7 @@ const Workspace = () => {
         )
         .then(() => {
           queryClient.refetchQueries("user"); //사용자 로그인 정보 재호출
+          queryClient.refetchQueries("workspacesData"); //사용자 로그인 정보 재호출
           setNewUrl("");
           setNewWorkpsace("");
           onCloseModalHandler();
@@ -135,7 +143,15 @@ const Workspace = () => {
       <div className="float-clear" style={{ height: "100vh" }}>
         <section className="left-panel float-left">
           <ul>
-            <li className="home">
+            <li
+              id="ws-home"
+              onClick={onSelectWsHandler}
+              className={
+                activeIndex === `ws-home`
+                  ? "home ws-item selected"
+                  : "home ws-item"
+              }
+            >
               <Link to={`/workspace`}>
                 <BiHomeHeart size="32" color="#fff" />
               </Link>
@@ -187,7 +203,7 @@ const Workspace = () => {
               <Route path={`/workspace/${workspace}/channel/user`}></Route>
             </Routes>
             {/* */}
-            {channelData ? <ChattingRoom /> : <ChannelHome />}
+            {!workspace ? <ChannelHome /> : <ChattingRoom />}
           </div>
         </section>
       </div>

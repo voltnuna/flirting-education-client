@@ -57,6 +57,10 @@
     border: 2px solid var(--primary-green);
     border-radius: 10px;
   }
+  &.home.selected {
+    border: 2px solid var(--primary-blue);
+    border-radius: 10px;
+  }
 }
 /*  */
 .chatterlist {

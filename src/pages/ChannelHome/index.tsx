@@ -1,25 +1,31 @@
 import React, { useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import Header from "@components/Header";
 import ChatterList from "@components/ChatterList";
-import { dummyUserData } from "@assets/data";
+import { useQuery } from "react-query";
+import { IUser } from "@typings/db";
+import fetcher from "@utils/fetcher";
 
 const ChannelHome = () => {
-  const onSwitchPage = useCallback(() => {
-    console.log("");
-  }, []);
+  const { workspace } = useParams<{
+    workspace?: string;
+  }>();
+
+  const { data: wsMembersData } = useQuery<IUser[]>("members", () =>
+    fetcher({
+      queryKey: `http://localhost:3095/api/workspaces/${
+        workspace ? workspace : "chatterbox"
+      }/members`,
+    })
+  );
+
+  const onSwitchPage = useCallback(() => {}, []);
+
   return (
     <>
       <div>
-        <Header
-          title="친구"
-          onSwitchPage={onSwitchPage}
-          menus={[
-            { name: "전체", path: "all" },
-            { name: "차단", path: "block" },
-          ]}
-        />
+        <Header title="친구" onSwitchPage={onSwitchPage} />
         <div className="channel-body float-clear">
           <div className="channel-body__left float-left">
             <div className="search-area">
@@ -29,13 +35,13 @@ const ChannelHome = () => {
                   <IoSearch size="16" />
                 </button>
               </div>
-              <p>모든 친구 - {dummyUserData.length}명</p>
+              <p>모든 친구 - {wsMembersData?.length}명</p>
             </div>
             <div
               className="scrollbar"
               style={{ height: "calc(100vh - 270px)", overflowY: "auto" }}
             >
-              <ChatterList myChatters={dummyUserData} />
+              <ChatterList myChatters={wsMembersData} />
             </div>
           </div>
           <div className="channel-body__right float-right">
