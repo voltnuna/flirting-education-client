@@ -1,12 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import gravatar from "gravatar";
 import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { IUser } from "@typings/db";
 import { useQuery } from "react-query";
 import fetcher from "@utils/fetcher";
+
 interface Props {
   myChatters: IUser[] | undefined;
+  /*   onModalShow: (email: string) => void;
+   */ // onInviteWsHandler: (memberId: string) => void;
 }
 
 const ChatterList: FC<Props> = ({ myChatters }) => {

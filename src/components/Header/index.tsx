@@ -15,8 +15,6 @@ const Header: FC<Props> = ({ title, menus, onSwitchPage }) => {
     channel?: string;
   }>();
 
-  console.log(channel, workspace);
-
   return (
     <>
       <header>

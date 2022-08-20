@@ -46,6 +46,7 @@
   width: calc(100% - 7.2rem);
   height: 100vh;
   .side-panel {
+    position: relative;
     width: 24rem;
     width: 12.987%;
     height: 100%;
@@ -134,10 +135,14 @@
 }
 
 .channel-body {
+  //  height: 100%;
+  height: calc(100% - 49px);
   font-size: var.$font-size;
   &__left {
     width: 73.973%;
     height: 100%;
+    border-right: 1px solid
+      hsla(217, calc(var(--saturation-factor, 1) * 7.6%), 33.5%, 0.48);
     .search-area {
       padding: 1.6rem;
     }
@@ -149,16 +154,30 @@
     }
   }
   &__right {
-    width: calc(26.027% - 1px);
+    width: 26.027%;
     height: 100%;
     padding: 16px;
     height: 100%;
-    border-left: 1px solid
-      hsla(217, calc(var(--saturation-factor, 1) * 7.6%), 33.5%, 0.48);
   }
 
   p {
     font-size: 1.4rem;
     color: #b9bbbe;
   }
+}
+
+.user-status {
+  @include mixin.setPosition(absolute, null, 0, 0, 0);
+  background-color: #292b2f;
+  padding: 1rem 1rem;
+  .profile-username {
+    color: #fff;
+    line-height: 40px;
+    display: inline-block;
+    margin-left: 1rem;
+  }
+}
+
+.offline {
+  display: none;
 }

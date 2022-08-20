@@ -5,7 +5,7 @@ import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
 import fetcher from "@utils/fetcher";
 import { IUser } from "@typings/db";
-
+import { toast } from "react-toastify";
 import axios, { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
@@ -77,7 +77,17 @@ const Signup = () => {
     (data) =>
       axios
         .post("http://localhost:3095/api/users", data)
-        .then((response) => response.data),
+        .then((response) => {
+          toast("Default Notification !");
+          return response.data;
+        })
+        .catch((error) => {
+          console.dir(error.response.data);
+          toast.error(error.response?.data, {
+            position: "bottom-center",
+            className: "toast-pop",
+          });
+        }),
     {
       onMutate() {
         setSignUpError("");
@@ -88,6 +98,10 @@ const Signup = () => {
       },
       onError(error) {
         setSignUpError(error.response?.data);
+        toast.error(error.response?.data, {
+          position: "bottom-center",
+          className: "toast-pop",
+        });
       },
     }
   );

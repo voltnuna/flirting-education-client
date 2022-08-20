@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Navigate, Routes, Route, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-
 import useToggle from "@hooks/useToggle";
 import useInput from "@hooks/useInput";
 import loadable from "@loadable/component";
 import fetcher from "@utils/fetcher";
 import { IChannel, IUser, IWorkspace } from "@typings/db";
-
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios, { AxiosError } from "axios";
-
+import { IoSearch } from "react-icons/io5";
 import { BiHomeHeart } from "react-icons/bi";
 import { MdOutlineAdd } from "react-icons/md";
-
+import useSocket from "@hooks/useSocket";
+import gravatar from "gravatar";
+import ChatterList from "@components/ChatterList";
+import Header from "@components/Header";
 const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
 const ChattingRoom = loadable(() => import("@pages/ChattingRoom"));
@@ -24,6 +25,9 @@ const Workspace = () => {
   const { workspace } = useParams<{
     workspace?: string;
   }>();
+
+  const [socket, disconnect] = useSocket(workspace);
+  const [onlineList, setOnlineList] = useState<number[]>([]);
 
   const { isLoading, data: userData } = useQuery("user", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
@@ -46,6 +50,44 @@ const Workspace = () => {
     }
   );
 
+  const { data: wsMembersData } = useQuery<IUser[]>("members", () =>
+    fetcher({
+      queryKey: `http://localhost:3095/api/workspaces/${
+        workspace ? workspace : "chatterbox"
+      }/members`,
+    })
+  );
+
+  useEffect(() => {
+    if (channelData && userData && socket) {
+      socket?.emit("login", {
+        id: userData.id,
+        channels: channelData.map((v) => v.id),
+      });
+    }
+  }, [socket, channelData, userData, wsMembersData]);
+
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [workspace, disconnect]);
+
+  useEffect(() => {
+    socket?.on("onlineList", (data: number[]) => {
+      setOnlineList(data);
+    });
+    return () => {
+      socket?.off("onlineList");
+    };
+  }, [socket, userData, wsMembersData, setOnlineList]);
+
+  useEffect(() => {
+    setOnlineList([]);
+  }, [workspace]);
+
+  console.log("온라인 찾기 wsMembersData", socket, wsMembersData, onlineList);
+
   const [openList, setValue, setTrue, setFalse, toggle] = useToggle(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkpsace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
@@ -56,16 +98,13 @@ const Workspace = () => {
   const onAddChannelHandler = useCallback(() => {
     setShowAdChannelModal(true);
   }, [setShowAdChannelModal]);
-
   const onCloseModalHandler = useCallback(() => {
     setShowAddWsModal(false);
     setShowAdChannelModal(false);
   }, [setShowAddWsModal]);
-
   const addWorkSpaceModalHandler = useCallback(() => {
     setShowAddWsModal(true);
   }, [setShowAddWsModal]);
-
   const onCreateWorkspace = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -196,14 +235,87 @@ const Workspace = () => {
               </div>
             </div>
             <ChannelList channelList={channelData} />
+            <div className="user-status in-a-row profile-wrap">
+              <span className="profile-img">
+                <img
+                  src={gravatar.url(userData.email, {
+                    s: "70px",
+                    d: "monsterid",
+                  })}
+                  alt={`${userData.nickname}`}
+                />
+              </span>
+              <span className="profile-username">{userData.nickname}</span>
+            </div>
           </div>
-          <div className="content-panel float-right">
-            <Routes>
-              <Route path={`/workspace/${workspace}/user/:id`}></Route>
-              <Route path={`/workspace/${workspace}/channel/user`}></Route>
-            </Routes>
-            {/* */}
-            {!workspace ? <ChannelHome /> : <ChattingRoom />}
+          <div className="content-panel float-right float-clear">
+            <Header title="친구 찾기" />
+            <div className="channel-body">
+              <div className="channel-body__left float-left">
+                {workspace ? (
+                  <ChattingRoom />
+                ) : (
+                  <>
+                    <div className="search-area">
+                      <div className="search-form">
+                        <input type="text" placeholder="검색하기" />
+                        <button type="submit">
+                          <IoSearch size="16" />
+                        </button>
+                      </div>
+                      <p>모든 친구 - {wsMembersData?.length}명</p>
+                    </div>
+                    <div
+                      className="scrollbar"
+                      style={{
+                        height: "calc(100vh - 270px)",
+                        overflowY: "auto",
+                      }}
+                    >
+                      <ChatterList myChatters={wsMembersData} />
+                    </div>
+                  </>
+                )}
+              </div>
+              <div className="channel-body__right float-right">
+                <span className="h3">현재 활동 중</span>
+                <div>
+                  <span className="h5">지금은 조용하네요...</span>
+                  <p>
+                    친구가 게임이나 음성 채팅과 같은 활동을 시작하면 여기에
+                    표시돼요!
+                  </p>
+                </div>
+                <ul className="list-vertical">
+                  {wsMembersData?.map((member, idx) => {
+                    const isOnline = onlineList.includes(member.id);
+                    return (
+                      <li
+                        key={`${member.id}`}
+                        className={
+                          isOnline
+                            ? "list-vertical__item online in-a-row profile-wrap"
+                            : "list-vertical__item offline in-a-row profile-wrap"
+                        }
+                      >
+                        <span className="profile-img">
+                          <img
+                            src={gravatar.url(member.email, {
+                              s: "70px",
+                              d: "monsterid",
+                            })}
+                            alt={`${member.nickname}`}
+                          />
+                        </span>
+                        <span className="profile-username">
+                          {member.nickname}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -270,6 +382,33 @@ const Workspace = () => {
           </div>
         </form>
       </FormModal>
+      {/* 친구초대 */}
+      {/*    <FormModal
+        title="워크스페이스 초대"
+        onCloseModalHandler={onCloseModalHandler}
+        show={showInviteWsModal}
+      >
+        <form action="" onSubmit={onInviteHandler}>
+          <div className="modal__body">
+            <div className="modal__content">
+              <div className="input-form">
+                <label>이메일</label>
+                <input
+                  type="email"
+                  className="fullsize"
+                  value={newMember}
+                  onChange={onChangeNewMember}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="modal__footer">
+            <button type="submit" className="btn-regist">
+              등록
+            </button>
+          </div>
+        </form>
+      </FormModal> */}
     </>
   );
 };
