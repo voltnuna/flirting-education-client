@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
@@ -15,11 +15,12 @@ const Signup = () => {
     isSuccess,
     status,
     isError,
-    data,
+    data: userData,
     error,
   } = useQuery("user", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
+  const navi = useNavigate();
 
   const [email, onChangeEamil] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -94,7 +95,7 @@ const Signup = () => {
         setSignUpSuccess(false);
       },
       onSuccess() {
-        setSignUpSuccess(true);
+        return navi("/login");
       },
       onError(error) {
         setSignUpError(error.response?.data);
@@ -111,7 +112,7 @@ const Signup = () => {
       e.preventDefault();
       if (!onFormCheckHandler()) return;
       if (!mismatchError && nickname)
-        mutation.mutate({ email, nickname, password });
+        console.log(mutation.mutate({ email, nickname, password }));
     },
     [email, password, nickname, mismatchError, mutation, onFormCheckHandler]
   );
@@ -120,8 +121,8 @@ const Signup = () => {
     return <div>로딩중...</div>;
   }
 
-  if (data) {
-    return <Navigate to="/workspace" />;
+  if (userData) {
+    return <Navigate to="/login" />;
   }
   return (
     <>

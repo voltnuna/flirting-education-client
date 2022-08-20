@@ -6,15 +6,19 @@ import useInput from "@hooks/useInput";
 import loadable from "@loadable/component";
 import fetcher from "@utils/fetcher";
 import { IChannel, IUser, IWorkspace } from "@typings/db";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import axios, { AxiosError } from "axios";
-import { IoSearch } from "react-icons/io5";
-import { BiHomeHeart } from "react-icons/bi";
-import { MdOutlineAdd } from "react-icons/md";
+
 import useSocket from "@hooks/useSocket";
 import gravatar from "gravatar";
 import ChatterList from "@components/ChatterList";
 import Header from "@components/Header";
+
+import { IoSearch } from "react-icons/io5";
+import { BiHomeHeart } from "react-icons/bi";
+import { MdOutlineAdd } from "react-icons/md";
+import { FaPowerOff } from "react-icons/fa";
+
 const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
 const ChattingRoom = loadable(() => import("@pages/ChattingRoom"));
@@ -22,8 +26,10 @@ const ChannelHome = loadable(() => import("@pages/ChannelHome"));
 
 const Workspace = () => {
   const queryClient = useQueryClient();
-  const { workspace } = useParams<{
+  const { workspace, channel, id } = useParams<{
     workspace?: string;
+    channel?: string;
+    id?: string;
   }>();
 
   const [socket, disconnect] = useSocket(workspace);
@@ -85,8 +91,6 @@ const Workspace = () => {
   useEffect(() => {
     setOnlineList([]);
   }, [workspace]);
-
-  console.log("온라인 찾기 wsMembersData", socket, wsMembersData, onlineList);
 
   const [openList, setValue, setTrue, setFalse, toggle] = useToggle(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkpsace] = useInput("");
@@ -163,6 +167,19 @@ const Workspace = () => {
     [workspace, newChannel, setNewChannel]
   );
   const [activeIndex, setActiveIndex] = useState("");
+
+  const onLogoutHandler = useCallback(() => {
+    axios
+      .post(
+        "http://localhost:3095/api/users/logout",
+        {},
+        { withCredentials: true }
+      )
+      .then((response) => {
+        window.location.reload();
+      })
+      .catch((error) => console.dir(error.response.data));
+  }, []);
 
   const onSelectWsHandler = useCallback(
     (e: any) => {
@@ -246,10 +263,23 @@ const Workspace = () => {
                 />
               </span>
               <span className="profile-username">{userData.nickname}</span>
+              <button type="button" onClick={onLogoutHandler}>
+                <FaPowerOff color="#fff" size="16" />
+              </button>
             </div>
           </div>
           <div className="content-panel float-right float-clear">
-            <Header title="친구 찾기" />
+            <Header
+              title={
+                id
+                  ? "Direct Message"
+                  : channel
+                  ? `#${channel}`
+                  : workspace
+                  ? `#${workspace}`
+                  : "친구 찾기"
+              }
+            />
             <div className="channel-body">
               <div className="channel-body__left float-left">
                 {workspace ? (
@@ -278,15 +308,14 @@ const Workspace = () => {
                 )}
               </div>
               <div className="channel-body__right float-right">
-                <span className="h3">현재 활동 중</span>
-                <div>
-                  <span className="h5">지금은 조용하네요...</span>
+                <span className="h3">현재 워크스페이스 활동 중</span>
+                <div style={{ margin: "1rem 0" }}>
                   <p>
                     친구가 게임이나 음성 채팅과 같은 활동을 시작하면 여기에
                     표시돼요!
                   </p>
                 </div>
-                <ul className="list-vertical">
+                <ul className="list-vertical" style={{ margin: "2rem 0" }}>
                   {wsMembersData?.map((member, idx) => {
                     const isOnline = onlineList.includes(member.id);
                     return (
