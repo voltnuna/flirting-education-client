@@ -1,6 +1,9 @@
 import { IChannel } from "@typings/db";
+import fetcher from "@utils/fetcher";
 import React, { useCallback, useRef, FC, useState } from "react";
 import { SiSharp } from "react-icons/si";
+import { useQuery } from "react-query";
+
 import {
   Link,
   Navigate,
@@ -11,10 +14,11 @@ import {
 } from "react-router-dom";
 
 interface Props {
-  channelList?: IChannel[];
+  //  channelList?: IChannel[];
+  channelData?: IChannel[];
 }
 
-const ChannelList: FC<Props> = ({ channelList }) => {
+const ChannelList: FC<Props> = ({ channelData }) => {
   const [activeIndex, setActiveIndex] = useState("");
   const { workspace } = useParams<{
     workspace?: string;
@@ -29,7 +33,7 @@ const ChannelList: FC<Props> = ({ channelList }) => {
   return (
     <>
       <ul className="scrollarea list-vertical">
-        {channelList?.map((channel, idx) => {
+        {channelData?.map((channel, idx) => {
           return (
             <li
               key={`${channel.id}--${idx}`}

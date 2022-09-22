@@ -1,30 +1,40 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import gravatar from "gravatar";
 import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
+import { IUser } from "@typings/db";
+import { useQuery } from "react-query";
+import fetcher from "@utils/fetcher";
+
 interface Props {
-  myChatters: {
-    nickname: string;
-    email: string;
-    state: string;
-  }[];
+  myChatters: IUser[] | undefined;
+  myDataId: number;
+  /*   onModalShow: (email: string) => void;
+   */ // onInviteWsHandler: (memberId: string) => void;
 }
 
-const ChatterList: FC<Props> = ({ myChatters }) => {
+const ChatterList: FC<Props> = ({ myChatters, myDataId }) => {
   const { workspace } = useParams<{
     workspace?: string;
   }>();
+
   return (
     <>
       <ul className="list-vertical">
-        {myChatters.map((chatter, idx) => {
+        {myChatters?.map((chatter, idx) => {
           return (
             <li
-              className="list-vertical__item chatterlist"
+              className={
+                myDataId === chatter.id
+                  ? "hidden"
+                  : "list-vertical__item chatterlist"
+              }
               key={`$chatter--${idx}`}
             >
               <Link
-                to={`/workspace/${workspace}/dms/:id/chats`}
+                to={`/workspace/${workspace ? workspace : "chatterbox"}/dms/${
+                  chatter.id
+                }/chats`}
                 className="center-vertical"
               >
                 <span className="profile-img">
@@ -38,7 +48,7 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
                 </span>
                 <span>{chatter.nickname}</span>
               </Link>
-              <div className="util in-a-row">
+              <div className="util in-a-row hidden">
                 <button type="button">
                   <BsChatDotsFill size="15" color="#b9bbbe" />
                 </button>

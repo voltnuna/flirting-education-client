@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import useInput from "@hooks/useInput";
 import AlertModal from "@components/AlertModal";
 import InputForm from "@components/InputForm";
 import fetcher from "@utils/fetcher";
 import { IUser } from "@typings/db";
-
+import { toast } from "react-toastify";
 import axios, { AxiosError } from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
@@ -15,11 +15,12 @@ const Signup = () => {
     isSuccess,
     status,
     isError,
-    data,
+    data: userData,
     error,
-  } = useQuery("user", () =>
+  } = useQuery("users", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
+  const navi = useNavigate();
 
   const [email, onChangeEamil] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -47,6 +48,7 @@ const Signup = () => {
     },
     [password, setPasswordCheck]
   );
+
   const onFormCheckHandler = useCallback(() => {
     if (email.length === 0) {
       setAlertMsg("이메일");
@@ -73,21 +75,35 @@ const Signup = () => {
     AxiosError,
     { email: string; password: string; nickname: string }
   >(
-    "user",
+    "users",
     (data) =>
       axios
         .post("http://localhost:3095/api/users", data)
-        .then((response) => response.data),
+        .then((response) => {
+          toast("Default Notification !");
+          return response.data;
+        })
+        .catch((error) => {
+          console.dir(error.response.data);
+          toast.error(error.response?.data, {
+            position: "bottom-center",
+            className: "toast-pop",
+          });
+        }),
     {
       onMutate() {
         setSignUpError("");
         setSignUpSuccess(false);
       },
       onSuccess() {
-        setSignUpSuccess(true);
+        return navi("/login");
       },
       onError(error) {
         setSignUpError(error.response?.data);
+        toast.error(error.response?.data, {
+          position: "bottom-center",
+          className: "toast-pop",
+        });
       },
     }
   );
@@ -97,7 +113,7 @@ const Signup = () => {
       e.preventDefault();
       if (!onFormCheckHandler()) return;
       if (!mismatchError && nickname)
-        mutation.mutate({ email, nickname, password });
+        console.log(mutation.mutate({ email, nickname, password }));
     },
     [email, password, nickname, mismatchError, mutation, onFormCheckHandler]
   );
@@ -106,8 +122,8 @@ const Signup = () => {
     return <div>로딩중...</div>;
   }
 
-  if (data) {
-    return <Navigate to="/workspace" />;
+  if (userData) {
+    return <Navigate to="/login" />;
   }
   return (
     <>

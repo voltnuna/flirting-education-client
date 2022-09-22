@@ -7,14 +7,23 @@
   @include mixin.setFlex(inline-flex);
 }
 
+.h1 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-family: "Happiness-Sans-Title";
+}
 .h3 {
   color: #fff;
   font-size: 2rem;
   font-weight: 600;
+  font-family: "Happiness-Sans-Title";
 }
 .h5 {
   color: #fff;
   font-size: 1.7rem;
+  font-family: "Happiness-Sans-Title";
 }
 
 .float {
@@ -68,4 +77,20 @@
 
 .avoid--click {
   pointer-events: none; //해당 요소는 click event target이 되지 않도록
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.2rem 1rem;
+  color: #fff;
+  border-radius: 1rem;
+  margin: 0 1rem;
+  &.negative {
+    border: 1px solid #e03a3e;
+    background: linear-gradient(to bottom, rgb(224 58 62 / 71%), #e03a3e);
+  }
+  &.positive {
+    border: 1px solid #00993e;
+    background: linear-gradient(to bottom, rgb(97 187 70 / 71%), #00993e);
+  }
 }

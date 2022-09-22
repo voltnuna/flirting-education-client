@@ -1,315 +1,182 @@
-import React, { useCallback } from "react";
-import Header from "@components/Header";
-import gravatar from "gravatar";
+import React, { useCallback, useEffect, useRef } from "react";
 import { IoIosSend } from "react-icons/io";
 import { useParams } from "react-router";
+import useInput from "@hooks/useInput";
+import axios, { AxiosError } from "axios";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import { IChat, IDM, IUser, IWorkspace } from "@typings/db";
+import fetcher from "@utils/fetcher";
+import makeSection from "@utils/makeSection";
+import ChatList from "@components/ChatList";
+import useSocket from "@hooks/useSocket";
 
 const ChattingRoom = () => {
-  const { workspace, channel } = useParams<{
+  const { workspace, id } = useParams<{
     workspace?: string;
-    channel?: string;
+    id?: string;
   }>();
 
-  const onSubmitHandler = useCallback((e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  }, []);
+  const queryClient = useQueryClient();
+  const { data: userData } = useQuery(
+    ["workspace", workspace, "users", id],
+    () => {
+      if (!id) return null;
+      return fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/users/${id}`,
+      });
+    }
+  );
+
+  const { data: myData } = useQuery("users", () =>
+    fetcher({ queryKey: "http://localhost:3095/api/users" })
+  );
+  const [chat, onChangeChat, setChat] = useInput("");
+  const { data: channelChatData } = useInfiniteQuery<IChat[]>([]);
+  const { data: chatData, fetchNextPage, hasNextPage } = useInfiniteQuery<
+    IDM[]
+  >(
+    ["workspace", workspace, "dm", id, "chat"],
+    ({ pageParam = 0 }) =>
+      fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${pageParam +
+          1}`,
+      }),
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.length === 0) return;
+        return pages.length;
+      },
+    }
+  );
+  const [socket] = useSocket(workspace);
+  const isEmpty = chatData?.pages ? chatData?.pages[0]?.length === 0 : false;
+  const isReachingEnd =
+    isEmpty ||
+    (chatData && chatData?.pages[chatData?.pages.length - 1]?.length < 20) ||
+    false;
+
+  const mutation = useMutation<IDM, AxiosError, { content: string }>(
+    ["workspace", workspace, "dm", id, "chat"],
+    () =>
+      fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
+      }),
+    {
+      onMutate(mutateData) {
+        queryClient.setQueryData<InfiniteData<IDM[]>>(
+          ["workspace", workspace, "dm", id, "chat"],
+          (data) => {
+            const newPages = data?.pages.slice() || [];
+            newPages[0].unshift({
+              id: (data?.pages[0][0]?.id || 0) + 1,
+              content: mutateData.content,
+              SenderId: myData.id,
+              Sender: myData,
+              ReceiverId: userData.id,
+              Receiver: userData,
+              createdAt: new Date(),
+            });
+            return {
+              pageParams: data?.pageParams || [],
+              pages: newPages,
+            };
+          }
+        );
+        setChat("");
+        // scrollbarRef.current?.scrollToBottom();
+      },
+      onError(error) {
+        console.log("ERROR id", id);
+        console.error(error);
+      },
+      onSuccess() {
+        queryClient.refetchQueries(["workspace", workspace, "dm", id, "chat"]);
+      },
+    }
+  );
+  const onSubmitChatHandler = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (chat?.trim() && chatData) {
+        mutation.mutate({ content: chat });
+      }
+    },
+    [chat, chatData, mutation]
+  );
+  const onMessage = useCallback(
+    (data: IDM) => {
+      // id는 상대방 아이디
+      if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+        queryClient.setQueryData<InfiniteData<IDM[]>>(
+          ["workspace", workspace, "dm", id, "chat"],
+          (prev) => {
+            const newPages = prev?.pages.slice() || [];
+            newPages[0].unshift(data);
+            return {
+              pageParams: prev?.pageParams || [],
+              pages: newPages,
+            };
+          }
+        );
+      }
+    },
+    [workspace, id, myData.id, queryClient]
+  );
+
+  /*   useEffect(() => {
+    socket?.on("dm", onMessage);
+    return () => {
+      socket?.off("dm", onMessage);
+    };
+  }, [socket, onMessage]); */
+
+  const onKeydownChat = useCallback(
+    (e: any) => {
+      if (e.key === "Enter") {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          onSubmitChatHandler(e);
+        }
+      }
+    },
+    [chat, onSubmitChatHandler]
+  );
+  /* 
+  if (!userData || !myData) {
+    return null;
+  } */
+
+  const chatSections = makeSection(
+    chatData ? chatData.pages.flat().reverse() : []
+  );
 
   return (
     <>
-      <Header title={`${channel}`} />
       <div className="chat-area">
         <div className="balloons-wrap scrollbar">
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`홍수희`}
-                />
-              </div>
-              <span className="profile-username">홍수희</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="div-line">
-            <strong>2022.08.15</strong>
-          </div>
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김테스터`}
-                />
-              </div>
-              <span className="profile-username">김테스터</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`홍수희`}
-                />
-              </div>
-              <span className="profile-username">홍수희</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`홍수희`}
-                />
-              </div>
-              <span className="profile-username">홍수희</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`홍수희`}
-                />
-              </div>
-              <span className="profile-username">홍수희</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon me">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("doeun@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`김도은`}
-                />
-              </div>
-              <span className="profile-username">김도은</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-              officia amet blanditiis quo, illum voluptates dolorem maiores
-              ratione asperiores veniam accusamus mollitia est ea ipsum possimus
-              quis eveniet tenetur nulla pariatur quibusdam repudiandae! Nobis,
-              harum recusandae minus hic tempora quod nulla modi ratione cumque.
-              Cumque, tempore sunt placeat qui, nobis recusandae pariatur error
-              quibusdam impedit consequuntur, quis id voluptatum harum deserunt
-              possimus inventore quasi officia rem similique. Eos dolores,
-              exercitationem modi quibusdam expedita rerum voluptate tempore
-              optio quae labore dolor consequuntur dolore obcaecati magni sint?
-              Harum at quisquam esse repellendus nulla dolore, natus
-              voluptatibus mollitia incidunt iste nihil laboriosam atque tempore
-              maxime labore pariatur rem quas, reiciendis ducimus facilis
-              reprehenderit nemo vitae? Sequi autem vero, eveniet recusandae
-              ipsam rerum dignissimos temporibus cum fuga ea voluptatum tempora
-              natus ad porro architecto nostrum. Nisi, nam. At nesciunt alias
-              officia similique molestiae minima, est ex praesentium tenetur
-              voluptas dicta, officiis animi excepturi illo aspernatur. Libero,
-              doloribus rem. Inventore tempora deleniti necessitatibus ipsum
-              voluptatibus! Exercitationem quo velit quam, itaque mollitia
-              eveniet, nisi dicta cupiditate et numquam repellat quod
-              distinctio, error odio modi veniam labore. Quasi, rerum quia vero,
-              dicta quos assumenda quo atque architecto odit dolores accusamus
-              labore delectus temporibus est nam molestias praesentium vel
-              tempore magni officiis suscipit porro quisquam voluptas saepe.
-              Nobis, sint id fugiat assumenda tempore magnam illo adipisci
-              repellat, minima consequatur voluptates facilis accusantium
-              dolorem? Ea harum magni facere sunt odio illum eaque, quod
-              aspernatur commodi quasi cum suscipit? Quis alias, laborum
-              deleniti numquam ad impedit adipisci. Inventore repudiandae neque
-              officia unde dolorem atque asperiores, et labore, quam ad optio
-              tempora fuga repellat? Distinctio quisquam fuga fugiat facilis quo
-              nesciunt molestiae dolorum reprehenderit qui adipisci
-              exercitationem odio non totam voluptas, a dolores sequi ad
-              dignissimos ex quis repellat laborum ullam repudiandae temporibus.
-              Quod nostrum, vitae enim dolores voluptatum ut reiciendis.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
-          <div className="chat-balloon other">
-            <div className="in-a-row profile-wrap">
-              <div className="profile-img">
-                <img
-                  src={gravatar.url("suthehee@gmail.com", {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`홍수희`}
-                />
-              </div>
-              <span className="profile-username">홍수희</span>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis
-              in eaque deserunt. Quos sunt provident doloremque, et cumque porro
-              harum accusantium consequatur amet facilis, nihil, expedita nobis
-              libero laborum facere.
-              <span className="date">2022.08.15</span>
-            </p>
-          </div>
+          <ChatList
+            myId={myData.id}
+            chatSections={chatSections}
+            fetchNext={fetchNextPage}
+            isReachingEnd={isReachingEnd}
+          />
         </div>
         <div className="chatbox-wrapper">
-          <form action="" onSubmit={onSubmitHandler} className="in-a-row">
-            <textarea name="" id="" rows={1}></textarea>
+          <form action="" onSubmit={onSubmitChatHandler} className="in-a-row">
+            <textarea
+              name=""
+              id=""
+              rows={1}
+              value={chat}
+              onChange={onChangeChat}
+              onKeyDown={onKeydownChat}
+            ></textarea>
             <button type="submit">
               <IoIosSend size="20" />
             </button>

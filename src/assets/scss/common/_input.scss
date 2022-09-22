@@ -6,7 +6,7 @@ input.fullsize {
   height: 4rem;
   border-radius: 0.3rem;
   font-size: var.$font-size;
-  color: #202225;
+  color: var(--darkest-gray);
 }
 
 .input-form {
@@ -26,7 +26,7 @@ input.fullsize {
   display: flex;
   position: relative;
   /*   margin: 1.6rem; */
-  background-color: #202225;
+  background-color: var(--darkest-gray);
   border-radius: 5px;
   input {
     width: 100%;

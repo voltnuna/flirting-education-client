@@ -5,7 +5,8 @@
   overflow: hidden;
   position: relative;
   padding: 1.6rem;
-  height: calc(100% - 48px);
+  //  height: calc(100% - 48px);
+  height: 100%;
 }
 
 .balloons-wrap {
@@ -16,7 +17,7 @@
   @include mixin.setPosition(absolute, null, 0, 0, 0);
 
   padding: 1.6rem;
-  border-top: 1px solid #40444b;
+  border-top: 1px solid var(--hovered-gray);
 
   form {
     width: 100%;
@@ -31,7 +32,7 @@
     padding: 1.3rem;
     border-radius: 5px;
     color: #fff;
-    background-color: #40444b;
+    background-color: var(--hovered-gray);
     font-size: var.$font-size;
   }
 }
@@ -51,7 +52,7 @@
     padding: 0.5rem 1rem;
     border-radius: 5px;
     color: #fff;
-    background-color: #36393f;
+    background-color: var(--workspace-gray);
   }
 }
 .chat-balloon {
@@ -68,7 +69,7 @@
   //@include mixin.setFlex(flex, start, top);
   color: #fff;
   p {
-    max-width: 80%;
+    max-width: 50%;
     //max-height: 20rem;
     //overflow-y: auto;
     border-radius: 5px;
@@ -78,9 +79,11 @@
   &.other p {
     border: 2px solid rgba(47, 49, 54, 1);
     background-color: rgba(47, 49, 54, 0.5);
+    color: #fff;
   }
   &.me p {
     border: 2px solid rgba(59, 165, 93, 0.4);
-    background-color: rgba(59, 165, 93, 0.1);
+    background-color: rgba(50, 145, 90, 0.6);
+    color: #fff;
   }
 }

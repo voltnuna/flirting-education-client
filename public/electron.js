@@ -6,7 +6,7 @@ var path = require("path");
 var mainWindow;
 var createWindow = function() {
   mainWindow = new electron_1.BrowserWindow({
-    width: 1350,
+    width: 1500,
     height: 775,
     center: true,
     kiosk: !isDev,

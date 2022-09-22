@@ -24,11 +24,11 @@ function App() {
             path="/workspace/:workspace/users/:id"
             element={<Workspace />}
           ></Route>
-          <Route path="/workspace/:workspace" element={<Workspace />}></Route>
           <Route
             path="/workspace/:workspace/channel/:channel"
             element={<Workspace />}
           ></Route>
+          <Route path="/workspace/:workspace" element={<Workspace />}></Route>
         </Routes>
       </BrowserRouter>
     </>
@@ -36,3 +36,4 @@ function App() {
 }
 
 export default App;
+//EX) ws:학년 > ch:반 > dm: 학생끼리 대화
