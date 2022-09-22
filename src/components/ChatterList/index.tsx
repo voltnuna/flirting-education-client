@@ -8,11 +8,12 @@ import fetcher from "@utils/fetcher";
 
 interface Props {
   myChatters: IUser[] | undefined;
+  myDataId: number;
   /*   onModalShow: (email: string) => void;
    */ // onInviteWsHandler: (memberId: string) => void;
 }
 
-const ChatterList: FC<Props> = ({ myChatters }) => {
+const ChatterList: FC<Props> = ({ myChatters, myDataId }) => {
   const { workspace } = useParams<{
     workspace?: string;
   }>();
@@ -23,7 +24,11 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
         {myChatters?.map((chatter, idx) => {
           return (
             <li
-              className="list-vertical__item chatterlist"
+              className={
+                myDataId === chatter.id
+                  ? "hidden"
+                  : "list-vertical__item chatterlist"
+              }
               key={`$chatter--${idx}`}
             >
               <Link
@@ -43,7 +48,7 @@ const ChatterList: FC<Props> = ({ myChatters }) => {
                 </span>
                 <span>{chatter.nickname}</span>
               </Link>
-              <div className="util in-a-row">
+              <div className="util in-a-row hidden">
                 <button type="button">
                   <BsChatDotsFill size="15" color="#b9bbbe" />
                 </button>

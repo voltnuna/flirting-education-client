@@ -1,51 +1,52 @@
-import React, { useCallback } from "react";
-import Header from "@components/Header";
-import gravatar from "gravatar";
+import React, { useCallback, useEffect, useRef } from "react";
 import { IoIosSend } from "react-icons/io";
 import { useParams } from "react-router";
 import useInput from "@hooks/useInput";
 import axios, { AxiosError } from "axios";
-import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
-import { IDM } from "@typings/db";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import { IChat, IDM, IUser, IWorkspace } from "@typings/db";
 import fetcher from "@utils/fetcher";
 import makeSection from "@utils/makeSection";
-import DirectMessage from "@components/DirectMessage";
+import ChatList from "@components/ChatList";
+import useSocket from "@hooks/useSocket";
 
 const ChattingRoom = () => {
-  const { workspace, channel, id } = useParams<{
+  const { workspace, id } = useParams<{
     workspace?: string;
-    channel?: string;
     id?: string;
   }>();
+
   const queryClient = useQueryClient();
-  const [chat, onChangeChat, setChat] = useInput("");
-  /* 내 정보 */
-  const { data: myData } = useQuery("user", () =>
-    fetcher({ queryKey: "http://localhost:3095/api/users" })
-  );
-  /* 상대방 정보 id */
   const { data: userData } = useQuery(
     ["workspace", workspace, "users", id],
     () => {
-      id &&
-        fetcher({
-          queryKey: `http://localhost:3095/api/workspaces/${workspace}/users/${id}`,
-        });
+      if (!id) return null;
+      return fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/users/${id}`,
+      });
     }
   );
 
-  /* 나와 상대방이 나눈 채팅 정보 가져오기*/
+  const { data: myData } = useQuery("users", () =>
+    fetcher({ queryKey: "http://localhost:3095/api/users" })
+  );
+  const [chat, onChangeChat, setChat] = useInput("");
+  const { data: channelChatData } = useInfiniteQuery<IChat[]>([]);
   const { data: chatData, fetchNextPage, hasNextPage } = useInfiniteQuery<
     IDM[]
   >(
     ["workspace", workspace, "dm", id, "chat"],
-    ({ pageParam }) => {
-      return fetcher({
-        queryKey: `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${
-          pageParam ? parseInt(pageParam + 1) : 1
-        }`,
-      });
-    },
+    ({ pageParam = 0 }) =>
+      fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats?perPage=20&page=${pageParam +
+          1}`,
+      }),
     {
       getNextPageParam: (lastPage, pages) => {
         if (lastPage.length === 0) return;
@@ -53,51 +54,104 @@ const ChattingRoom = () => {
       },
     }
   );
-
-  const isEmpty = chatData?.pages[0]?.length === 0;
-
+  const [socket] = useSocket(workspace);
+  const isEmpty = chatData?.pages ? chatData?.pages[0]?.length === 0 : false;
   const isReachingEnd =
     isEmpty ||
     (chatData && chatData?.pages[chatData?.pages.length - 1]?.length < 20) ||
     false;
 
-  console.log(chatData);
-
-  const onKeydownChat = useCallback((e: any) => {
-    if (e.key === "Enter") {
-      console.log(e);
-      if (!e.shiftKey) {
-        e.preventDefault();
-        onSubmitChatHandler(e);
-        console.log(e);
-      }
+  const mutation = useMutation<IDM, AxiosError, { content: string }>(
+    ["workspace", workspace, "dm", id, "chat"],
+    () =>
+      fetcher({
+        queryKey: `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
+      }),
+    {
+      onMutate(mutateData) {
+        queryClient.setQueryData<InfiniteData<IDM[]>>(
+          ["workspace", workspace, "dm", id, "chat"],
+          (data) => {
+            const newPages = data?.pages.slice() || [];
+            newPages[0].unshift({
+              id: (data?.pages[0][0]?.id || 0) + 1,
+              content: mutateData.content,
+              SenderId: myData.id,
+              Sender: myData,
+              ReceiverId: userData.id,
+              Receiver: userData,
+              createdAt: new Date(),
+            });
+            return {
+              pageParams: data?.pageParams || [],
+              pages: newPages,
+            };
+          }
+        );
+        setChat("");
+        // scrollbarRef.current?.scrollToBottom();
+      },
+      onError(error) {
+        console.log("ERROR id", id);
+        console.error(error);
+      },
+      onSuccess() {
+        queryClient.refetchQueries(["workspace", workspace, "dm", id, "chat"]);
+      },
     }
-  }, []);
-  if (chatData) {
-    console.log("chatData", chatData);
-  }
+  );
   const onSubmitChatHandler = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (!chat?.trim()) return;
-      axios
-        .post(
-          `http://localhost:3095/api/workspaces/${workspace}/dms/${id}/chats`,
-          { content: chat },
-          { withCredentials: true }
-        )
-        .then(() => {
-          setChat("");
-        })
-        .catch((error) => {
-          console.dir(error.response.data);
-        });
+      if (chat?.trim() && chatData) {
+        mutation.mutate({ content: chat });
+      }
     },
-    [chat, setChat, workspace, id]
+    [chat, chatData, mutation]
   );
+  const onMessage = useCallback(
+    (data: IDM) => {
+      // id는 상대방 아이디
+      if (data.SenderId === Number(id) && myData.id !== Number(id)) {
+        queryClient.setQueryData<InfiniteData<IDM[]>>(
+          ["workspace", workspace, "dm", id, "chat"],
+          (prev) => {
+            const newPages = prev?.pages.slice() || [];
+            newPages[0].unshift(data);
+            return {
+              pageParams: prev?.pageParams || [],
+              pages: newPages,
+            };
+          }
+        );
+      }
+    },
+    [workspace, id, myData.id, queryClient]
+  );
+
+  /*   useEffect(() => {
+    socket?.on("dm", onMessage);
+    return () => {
+      socket?.off("dm", onMessage);
+    };
+  }, [socket, onMessage]); */
+
+  const onKeydownChat = useCallback(
+    (e: any) => {
+      if (e.key === "Enter") {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          onSubmitChatHandler(e);
+        }
+      }
+    },
+    [chat, onSubmitChatHandler]
+  );
+  /* 
   if (!userData || !myData) {
     return null;
-  }
+  } */
+
   const chatSections = makeSection(
     chatData ? chatData.pages.flat().reverse() : []
   );
@@ -106,59 +160,12 @@ const ChattingRoom = () => {
     <>
       <div className="chat-area">
         <div className="balloons-wrap scrollbar">
-          {/*    {chatData &&
-            chatData?.map((chat, idx) => {
-              return (
-                <>
-                  <div className="chat-balloon me">
-                    <div className="in-a-row profile-wrap">
-                      <div className="profile-img">
-                        <img
-                          src={gravatar.url("doeun@gmail.com", {
-                            s: "70px",
-                            d: "monsterid",
-                          })}
-                          alt={`김도은`}
-                        />
-                      </div>
-                      <span className="profile-username">김도은</span>
-                    </div>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Veritatis in eaque deserunt. Quos sunt provident
-                      doloremque, et cumque porro harum accusantium consequatur
-                      amet facilis, nihil, expedita nobis libero laborum facere.
-                      <span className="date">2022.08.15</span>
-                    </p>
-                  </div>
-                  <div className="chat-balloon other">
-                    <div className="in-a-row profile-wrap">
-                      <div className="profile-img">
-                        <img
-                          src={gravatar.url("suthehee@gmail.com", {
-                            s: "70px",
-                            d: "monsterid",
-                          })}
-                          alt={`홍수희`}
-                        />
-                      </div>
-                      <span className="profile-username">홍수희</span>
-                    </div>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Veritatis in eaque deserunt. Quos sunt provident
-                      doloremque, et cumque porro harum accusantium consequatur
-                      amet facilis, nihil, expedita nobis libero laborum facere.
-                      <span className="date">2022.08.15</span>
-                    </p>
-                  </div>
-                </>
-              );
-            })} */}
-
-          <div className="div-line">
-            <strong>2022.08.15</strong>
-          </div>
+          <ChatList
+            myId={myData.id}
+            chatSections={chatSections}
+            fetchNext={fetchNextPage}
+            isReachingEnd={isReachingEnd}
+          />
         </div>
         <div className="chatbox-wrapper">
           <form action="" onSubmit={onSubmitChatHandler} className="in-a-row">
@@ -168,6 +175,7 @@ const ChattingRoom = () => {
               rows={1}
               value={chat}
               onChange={onChangeChat}
+              onKeyDown={onKeydownChat}
             ></textarea>
             <button type="submit">
               <IoIosSend size="20" />

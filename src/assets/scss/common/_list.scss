@@ -4,9 +4,8 @@
 /* ul에(또는 그 역할을하는 요소에) 해당 클래스 추가 */
 .list-horizontal {
   display: inline-flex;
+  align-items: center;
   height: 100%;
-  line-height: 4.8rem;
-
   &__item {
     display: inline-block;
     height: 100%;
@@ -23,7 +22,7 @@
 }
 
 .list-vertical {
-  &__item {
+  &__item:not(.chatterlist) {
     color: #96989d;
     padding: 0 2rem 0 1rem;
     margin-bottom: 0.4rem;
@@ -66,16 +65,17 @@
 .chatterlist {
   position: relative;
   @include mixin.setFlex(flex, space-between, center);
+  color: #96989d;
   &:hover a {
-    background-color: #40444b;
+    background-color: var(--hovered-gray);
   }
   margin-bottom: 1.2rem;
   .util {
     position: absolute;
-    left: 90%;
+    right: 1rem;
   }
   .util button {
-    background-color: #2f3136;
+    background-color: var(--side-pen-gray);
     border-radius: 50%;
     width: 35px;
     height: 35px;
@@ -87,13 +87,13 @@
   width: 10px;
 }
 .scrollbar::-webkit-scrollbar-thumb {
-  background-color: #202225;
+  background-color: var(--darkest-gray);
   border-radius: 10px;
 }
 .scrollbar::-webkit-scrollbar-track {
   background-color: #42464d;
   border-radius: 10px;
-  box-shadow: inset 0px 0px 5px #202225;
+  box-shadow: inset 0px 0px 5px var(--darkest-gray);
 }
 
 .profile-img {
@@ -111,5 +111,41 @@
     height: 100%;
     background-color: #fff;
     border-radius: 50%;
+  }
+}
+
+.ws--lists {
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: calc(100% - 20rem);
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: 1.6rem;
+  li {
+    display: inline-block;
+    width: 31.5%;
+    height: 30rem;
+    margin: 1rem;
+    padding: 2rem;
+    border-radius: 1rem;
+    background-color: #eee;
+    box-shadow: 0.1rem 0.1rem 0.7rem rgba($color: #090909, $alpha: 0.8);
+    background-image: url(../../images/heart.jpg);
+  }
+  li:hover {
+    opacity: 0.7;
+  }
+  .h3 {
+    margin-bottom: 1rem;
+  }
+  .ws--title {
+    color: #eee;
+    margin-bottom: 3rem;
+  }
+  .ws--summary {
+    color: #eee;
   }
 }

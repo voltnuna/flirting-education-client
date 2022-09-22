@@ -17,14 +17,26 @@
   --font-family: "Nanum SquareB", "맑은 고딕", "Apple SD Gothic Neo", sans-serif;
   --primary-blue: #5865f2;
   --primary-green: #3ba55d;
+  --primary-peach: #fc674e;
 
-  --negative-gray: #b9bbbe;
-  --negative-red: #ed4245;
-
-  --workspace-gray: #36393f;
-  --side-pen-gray: #2f3136;
+  /* dark mode */
   --darkest-gray: #202225;
-  --saturation-factor: 1;
+  --side-pen-gray: #2f3136;
+  --workspace-gray: #36393f;
+  --negative-gray: #b9bbbe;
+  --hovered-gray: #40444b;
+  --status-bar-gray: #292b2f;
+
+  /* light mode */
+  /*   
+  --darkest-red: #ed4245;
+  --workspace-dgray: #36393f;
+  --side-pen-gray: #!2f3136;
+  --darkest-gray: #!202225;
+  --negative-gray: #b9bbbe;
+  --hovered-gray: #40444b;
+  --saturation-factor: 1; 
+  */
 
   --header-primary: hsl(0, calc(var(--saturation-factor, 1) * 0%), 100%);
   --header-secondary: hsl(216, calc(var(--saturation-factor, 1) * 3.7%), 73.5%);

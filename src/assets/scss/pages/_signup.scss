@@ -15,9 +15,9 @@
 
   input {
     color: #fff;
-    background-color: #202225;
+    background-color: var(--darkest-gray);
     &:focus {
-      color: #202225;
+      color: var(--darkest-gray);
       background-color: #fff;
     }
   }

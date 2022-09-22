@@ -25,7 +25,7 @@ const Login = () => {
     isError,
     data: userData,
     error,
-  } = useQuery("user", () =>
+  } = useQuery("users", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
 
@@ -34,7 +34,7 @@ const Login = () => {
     AxiosError,
     { email: string; password: string }
   >(
-    "user",
+    "users",
     (userData) =>
       axios
         .post("http://localhost:3095/api/users/login", userData, {
@@ -46,7 +46,7 @@ const Login = () => {
         //       setLogInError(false);
       },
       onSuccess() {
-        queryClient.refetchQueries("user");
+        queryClient.refetchQueries("users");
       },
       onError(error) {
         // setLogInError(error.response?.data?.code === 401);

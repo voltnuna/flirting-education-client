@@ -25,6 +25,8 @@ export interface IChat {
   createdAt: Date;
   ChannelId: number;
   Channel: IChannel;
+  SenderId?: number; //에러 때문에 임시로 추가
+  Sender?: IUser; //에러 때문에 임시로 추가
 }
 
 export interface IDM {

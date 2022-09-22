@@ -17,7 +17,7 @@ const Signup = () => {
     isError,
     data: userData,
     error,
-  } = useQuery("user", () =>
+  } = useQuery("users", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
   const navi = useNavigate();
@@ -48,6 +48,7 @@ const Signup = () => {
     },
     [password, setPasswordCheck]
   );
+
   const onFormCheckHandler = useCallback(() => {
     if (email.length === 0) {
       setAlertMsg("이메일");
@@ -74,7 +75,7 @@ const Signup = () => {
     AxiosError,
     { email: string; password: string; nickname: string }
   >(
-    "user",
+    "users",
     (data) =>
       axios
         .post("http://localhost:3095/api/users", data)

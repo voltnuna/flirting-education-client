@@ -22,13 +22,13 @@ const Header: FC<Props> = ({ title, menus, onSwitchPage }) => {
           <ul className="list-horizontal">
             {!title ? (
               <li>
-                <span className="h5">{`${
+                <span className="h1">{`${
                   channel !== undefined ? `##${channel}` : `#${workspace}`
                 }`}</span>
               </li>
             ) : (
               <li>
-                <span className="h5">{`${title}`}</span>
+                <span className="h1">{`${title}`}</span>
               </li>
             )}
             {menus?.map((menu, idx) => {

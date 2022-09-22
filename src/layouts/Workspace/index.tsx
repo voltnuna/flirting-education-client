@@ -11,13 +11,17 @@ import axios, { AxiosError } from "axios";
 
 import useSocket from "@hooks/useSocket";
 import gravatar from "gravatar";
-import ChatterList from "@components/ChatterList";
-import Header from "@components/Header";
 
 import { IoSearch } from "react-icons/io5";
 import { BiHomeHeart } from "react-icons/bi";
 import { MdOutlineAdd } from "react-icons/md";
 import { FaPowerOff } from "react-icons/fa";
+
+import ChannelChat from "@pages/ChannelChat";
+import ChatterList from "@components/ChatterList";
+import Header from "@components/Header";
+import WorkspaceList from "@components/WorkspaceList";
+import { wsLists } from "@assets/dummy";
 
 const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
@@ -35,7 +39,7 @@ const Workspace = () => {
   const [socket, disconnect] = useSocket(workspace);
   const [onlineList, setOnlineList] = useState<number[]>([]);
 
-  const { isLoading, data: userData } = useQuery("user", () =>
+  const { isLoading, data: userData } = useQuery("users", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
 
@@ -98,6 +102,8 @@ const Workspace = () => {
   const [showAddWsModal, setShowAddWsModal] = useState(false);
   const [newChannel, onChangeNewChannel, setNewChannel] = useInput("");
   const [showAdChannelModal, setShowAdChannelModal] = useState(false);
+  const [searchUser, onChangeSearchUser, setSearchUser] = useInput("");
+  const [filteredUser, setFilteredUser] = useState(wsMembersData);
 
   const onAddChannelHandler = useCallback(() => {
     setShowAdChannelModal(true);
@@ -114,7 +120,6 @@ const Workspace = () => {
       e.preventDefault();
       if (!newWorkspace || !newWorkspace.trim()) return;
       if (!newUrl || !newUrl.trim()) return;
-
       axios
         .post(
           "http://localhost:3095/api/workspaces",
@@ -127,7 +132,7 @@ const Workspace = () => {
           }
         )
         .then(() => {
-          queryClient.refetchQueries("user"); //사용자 로그인 정보 재호출
+          queryClient.refetchQueries("users"); //사용자 로그인 정보 재호출
           queryClient.refetchQueries("workspacesData"); //사용자 로그인 정보 재호출
           setNewUrl("");
           setNewWorkpsace("");
@@ -187,6 +192,19 @@ const Workspace = () => {
     },
     [setActiveIndex]
   );
+
+  const onSearchUserHandler = useCallback(
+    (e: any) => {
+      const reg = /[a-zA-Z]{5},/g;
+      e.preventDefault();
+      console.log(filteredUser);
+      wsMembersData?.map((member, idx) => {
+        return member.nickname.includes(searchUser) && member;
+      });
+    },
+    [wsMembersData, searchUser, setFilteredUser]
+  );
+
   if (isLoading) {
     return <div>워크스페이스 로딩중...</div>;
   }
@@ -251,19 +269,26 @@ const Workspace = () => {
                 </button>
               </div>
             </div>
-            <ChannelList channelList={channelData} />
-            <div className="user-status in-a-row profile-wrap">
-              <span className="profile-img">
-                <img
-                  src={gravatar.url(userData.email, {
-                    s: "70px",
-                    d: "monsterid",
-                  })}
-                  alt={`${userData.nickname}`}
-                />
-              </span>
-              <span className="profile-username">{userData.nickname}</span>
-              <button type="button" onClick={onLogoutHandler}>
+            <ChannelList channelData={channelData} />
+            <div className="user-status profile-wrap float-clear">
+              <div className="in-a-row">
+                <span className="profile-img">
+                  <img
+                    src={gravatar.url(userData.email, {
+                      s: "70px",
+                      d: "monsterid",
+                    })}
+                    alt={`${userData.nickname}`}
+                  />
+                </span>
+                <span className="profile-username">{userData.nickname}</span>
+              </div>
+              <button
+                type="button"
+                onClick={onLogoutHandler}
+                className="float-right"
+                style={{ transform: "translateY(70%)" }}
+              >
                 <FaPowerOff color="#fff" size="16" />
               </button>
             </div>
@@ -277,71 +302,59 @@ const Workspace = () => {
                   ? `#${channel}`
                   : workspace
                   ? `#${workspace}`
-                  : "친구 찾기"
+                  : "Flirting School"
               }
             />
             <div className="channel-body">
+              {/* DM은 채터박스로 간다 */}
               <div className="channel-body__left float-left">
-                {workspace ? (
+                {workspace === "chatterbox" && id ? (
                   <ChattingRoom />
+                ) : (channel && !id) || (workspace && !channel) ? (
+                  <div>채널 채팅 페이지 준비중입니다</div>
                 ) : (
                   <>
                     <div className="search-area">
-                      <div className="search-form">
-                        <input type="text" placeholder="검색하기" />
+                      <form
+                        className="search-form"
+                        onSubmit={onSearchUserHandler}
+                      >
+                        <input
+                          type="text"
+                          placeholder="검색하기"
+                          value={searchUser}
+                          onChange={onChangeSearchUser}
+                        />
                         <button type="submit">
                           <IoSearch size="16" />
                         </button>
-                      </div>
-                      <p>모든 친구 - {wsMembersData?.length}명</p>
+                      </form>
+                      <p>모든 친구 - {filteredUser?.length}명</p>
                     </div>
-                    <div
-                      className="scrollbar"
-                      style={{
-                        height: "calc(100vh - 270px)",
-                        overflowY: "auto",
-                      }}
-                    >
-                      <ChatterList myChatters={wsMembersData} />
-                    </div>
+
+                    <WorkspaceList WsList={wsLists} />
                   </>
                 )}
               </div>
+              {/* onlineList */}
               <div className="channel-body__right float-right">
-                <span className="h3">현재 워크스페이스 활동 중</span>
+                <span className="h3">연애 랭킹 👑</span>
                 <div style={{ margin: "1rem 0" }}>
-                  <p>
-                    친구가 게임이나 음성 채팅과 같은 활동을 시작하면 여기에
-                    표시돼요!
-                  </p>
+                  <p>연애고민 해결사 파워 랭킹</p>
                 </div>
                 <ul className="list-vertical" style={{ margin: "2rem 0" }}>
-                  {wsMembersData?.map((member, idx) => {
-                    const isOnline = onlineList.includes(member.id);
-                    return (
-                      <li
-                        key={`${member.id}`}
-                        className={
-                          isOnline
-                            ? "list-vertical__item online in-a-row profile-wrap"
-                            : "list-vertical__item offline in-a-row profile-wrap"
-                        }
-                      >
-                        <span className="profile-img">
-                          <img
-                            src={gravatar.url(member.email, {
-                              s: "70px",
-                              d: "monsterid",
-                            })}
-                            alt={`${member.nickname}`}
-                          />
-                        </span>
-                        <span className="profile-username">
-                          {member.nickname}
-                        </span>
-                      </li>
-                    );
-                  })}
+                  <div
+                    className="scrollbar"
+                    style={{
+                      height: "calc(100vh - 270px)",
+                      overflowY: "auto",
+                    }}
+                  >
+                    <ChatterList
+                      myChatters={wsMembersData}
+                      myDataId={userData.id}
+                    />
+                  </div>
                 </ul>
               </div>
             </div>
@@ -428,7 +441,7 @@ const Workspace = () => {
                   value={newMember}
                   onChange={onChangeNewMember}
                 />
-              </div>
+              </div>  
             </div>
           </div>
           <div className="modal__footer">

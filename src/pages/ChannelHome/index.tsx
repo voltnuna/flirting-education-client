@@ -22,7 +22,7 @@ const ChannelHome: FC<Props> = ({ wsMembersData }) => {
   }>();
 
   const queryClient = useQueryClient();
-  const { data: userData } = useQuery("user", () =>
+  const { data: userData } = useQuery("users", () =>
     fetcher({ queryKey: "http://localhost:3095/api/users" })
   );
 
@@ -68,25 +68,7 @@ const ChannelHome: FC<Props> = ({ wsMembersData }) => {
       });
   }, []);
 
-  return (
-    <>
-      {/*          <div className="search-area">
-            <div className="search-form">
-              <input type="text" placeholder="검색하기" />
-              <button type="submit">
-                <IoSearch size="16" />
-              </button>
-            </div>
-            <p>모든 친구 - {wsMembersData?.length}명</p>
-          </div> */}
-      {/*         <div
-            className="scrollbar"
-            style={{ height: "calc(100vh - 270px)", overflowY: "auto" }}
-          >
-            <ChatterList myChatters={wsMembersData} />
-          </div> */}
-    </>
-  );
+  return <></>;
 };
 
 export default ChannelHome;
