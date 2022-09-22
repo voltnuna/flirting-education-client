@@ -1,5 +1,5 @@
-# 완성본이 아닌 작성중인 문서입니다.
-# Welcome to Electron-Chatterbox👋🏻
+# CHATTER BOX👾👽🤖
+## Welcome to Electron-Chatterbox👋🏻
 
 <img src="https://img.shields.io/badge/npm-EF9421?style=for-the-badge&logo=Npm&logoColor=white"> <img src="https://img.shields.io/badge/React-1D1D1D?style=for-the-badge&logo=React&logoColor=#0371B5"> <img src="https://img.shields.io/badge/ReactQuery-9D1620?style=for-the-badge&logo=ReactQuery&logoColor=white"> <img src="https://img.shields.io/badge/Electron-002050?style=for-the-badge&logo=Electron&logoColor=white"> <img src="https://img.shields.io/badge/Node.js-FFFFFF?style=for-the-badge&logo=Node.js&logoColor=#339933">
 
@@ -11,7 +11,7 @@
 _Note: This is only a navigation guide for the specification, and does not define or mandate terms for any specification-compliant documents._
 
 - [Sections](#sections)
-  - [Title](#title)
+  - 📚 [FILE STRUCTURE](#file-structure)
   - [Banner](#banner)
   - [Badges](#badges)
   - [Short Description](#short-description)
@@ -31,203 +31,131 @@ _Note: This is only a navigation guide for the specification, and does not defin
 
 ## Sections
 
-### Title
-**Status:** Required.
 
-**Requirements:**
-- Title must match repository, folder and package manager names - or it may have another, relevant title with the repository, folder, and package manager title next to it in italics and in parentheses. For instance:
+### 📚 CROSS BROWSING
 
-  ```markdown
-  # Standard Readme Style _(standard-readme)_
-  ```
+- 크롬 계열
 
-  If any of the folder, repository, or package manager names do not match, there must be a note in the [Long Description](#long-description) explaining why.
+### 📚FILE STRUCTURE
 
-**Suggestions:**
-- Should be self-evident.
+```
+- 📂 assets
+  - 📂 font
+    - 📄 NanumBarunGothicLight : font-weight 300
+    - 📄 NanumBarunGothic : font-weight 400
+    - 📄 NanumBarunGothicBold : font-weight 700
+  - 📂 styles
+    - 📄 components : ResultComponent, SearchArea 등 큼직한 부분의 스타일
+    - 📄 fonts : font 셋팅
+    - 📄 modal : 프로젝트 생성모달, 프로젝트 현황,
+    - 📄 mui : Mui 컴포넌트 스타일 커스텀 (datepicker, modal, svg)
+    - 📄 root : root 스타일
+    - 📄 reset : reset
+    - 📄 utils : mixin 및 기타
+    - 📄 index : index
+  - 📄 dummy.js : 아코디언에 뿌려질 프로젝트 정보 dummy값
+  - 📄 MapPinDummy.js : 지도 위에 Pin표시를 위해 생성한 dummy값
 
-### Banner
-**Status:** Optional.
+- 📂 components
+  - 📂 MapPinComponent : 비행로그기록 아이콘 컴포넌트
+  - 📂 Modal
+    - 📄 AnalysisStatus : 검색결과 리스트에서 상세정보 확인하는 모달창
+    - 📄 CreateProject : 프로젝트 생성 모달차
+  - 📂 SearchArea : 좌측 컴포넌트 영역으로, 검색 + 검색결과 + 프로젝트 생성 버튼이 포함됨
+  - 📂 ResultComponent :검색결과 컴포넌트
+- 📂 container
+- 📂 hoolks
+  - 📄 useBoolean : 모달 open, hidden을 위한 hooks
+  - 📄 useInputs : input 값 handle을 위한 hook
 
-**Requirements:**
-- Must not have its own title.
-- Must link to local image in current repository.
-- Must appear directly after the title.
+- ✅📄 craco.config.json : path alias를 위한 설정파일
+- ✅📄 jsconfig.json : js설정파일 (추가할 경로가 있을 경우 이 파일에서 셋팅한다.)
+```
 
-### Badges
-**Status:** Optional.
+## 📌 Container 구조
 
-**Requirements:**
-- Must not have its own title.
-- Must be newline delimited.
+```
+  <div id="container">
+    // S: 좌측 컴포넌트
+    <div className={isClosed ? "searcharea-wrap closed" : "searcharea-wrap"}>
+      ...
+    </div>
 
-**Suggestions:**
-- Use http://shields.io or a similar service to create and host the images.
-- Add the [Standard Readme badge](https://github.com/RichardLitt/standard-readme#badge).
+    // 우측 상단 탐색 결과 옵션 Tool모달
+    <div className={toolmd ? "toolmodal" : "toolmodal show"}>
+      ...
+    </div>
 
-### Short Description
-**Status:** Required.
+    // Modals..
+  </div>
 
-**Requirements:**
-- Must not have its own title.
-- Must be less than 120 characters.
-- Must not start with `> `
-- Must be on its own line.
-- Must match the description in the packager manager's `description` field.
-- Must match GitHub's description (if on GitHub).
+```
 
-**Suggestions:**
-- Use [gh-description](https://github.com/RichardLitt/gh-description) to set and get GitHub description.
-- Use `npm show . description` to show the description from a local [npm](https://npmjs.com) package.
+## 📌 SearchArea 구조
 
-### Long Description
-**Status:** Optional.
+### SearAread에 검색영역과 결과영역이 포함됩니다.
 
-**Requirements:**
-- Must not have its own title.
-- If any of the folder, repository, or package manager names do not match, there must be a note here as to why. See [Title section](#title).
+```
+  <div className="search-inputs-wrap">
+    <div className="search--filter">
+      ...
+    </div>
+  </div>
 
-**Suggestions:**
-- If too long, consider moving to the [Background](#background) section.
-- Cover the main reasons for building the repository.
-- "This should describe your module in broad terms,
-generally in just a few paragraphs; more detail of the module's
-routines or methods, lengthy code examples, or other in-depth
-material should be given in subsequent sections.
+  <div className="result-wrap">
+    <ResultComponent projectData={dummyProjectList} openDetailModal={openDetailModal} />
+  </div>
 
-  Ideally, someone who's slightly familiar with your module should be
-able to refresh their memory without hitting "page down". As your
-reader continues through the document, they should receive a
-progressively greater amount of knowledge."
+```
 
-  ~ [Kirrily "Skud" Robert, perlmodstyle](http://perldoc.perl.org/perlmodstyle.html)
+## 📌 MapPinComponent
 
-### Table of Contents
-**Status:** Required; optional for READMEs shorter than 100 lines.
+```
+     <MapPinComponent key={idx} top={pin.top} left={pin.left} />;
 
-**Requirements:**
-- Must link to all Markdown sections in the file.
-- Must start with the next section; do not include the title or Table of Contents headings.
-- Must be at least one-depth: must capture all `##` headings.
+     비행로그기록 아이콘을 위치시킬 좌표 값을 넘겨주어야 한다.
+```
 
-**Suggestions:**
-- May capture third and fourth depth headings. If it is a long ToC, these are optional.
+## 📌 AnalysisStatus Modal
 
-### Security
-**Status**: Optional.
+```
+     <MapPinComponent key={idx} top={pin.top} left={pin.left} />;
 
-**Requirements:**
-- May go here if it is important to highlight security concerns. Otherwise, it should be in [Extra Sections](#extra-sections).
+     비행로그기록 아이콘을 위치시킬 좌표 값을 넘겨주어야 한다.
+```
 
-### Background
-**Status:** Optional.
+## 📌 Hooks
 
-**Requirements:**
-- Cover motivation.
-- Cover abstract dependencies.
-- Cover intellectual provenance: A `See Also` section is also fitting.
+### useInput 사용
 
-### Install
-**Status:** Required by default, optional for [documentation repositories](#definitions).
+```
+    import useInputs from "@hooks/useInputs";
+    const [value, onValue, setValue] = useInputs("초기값");
 
-**Requirements:**
-- Code block illustrating how to install.
+    value는 input 안에 입력된 값
+    onValue input에 change event가 발생했을 때 value 값을 갱신해주는 handler
+    setValue 값을 직접 변경해야할 때 사용
+```
 
-**Subsections:**
-- `Dependencies`. Required if there are unusual dependencies or dependencies that must be manually installed.
+### useBoolean 사용
 
-**Suggestions:**
-- Link to prerequisite sites for programming language: [npmjs](https://npmjs.com), [godocs](https://godoc.org), etc.
-- Include any system-specific information needed for installation.
-- An `Updating` section would be useful for most packages, if there are multiple versions which the user may interface with.
+```
+    import useBoolean from "@src/hooks/useBoolean";
+    const [value, setTrue, setFalse, onToggler] = useBoolean(false);
 
-### Usage
-**Status:** Required by default, optional for [documentation repositories](#definitions).
+    value는 Boolean값
+    setTrue value값을 true로 변경해주는 handler
+    setFalse value값을 false 변경해주는 handler
+    onToggler value값을 현재 값의 반대값으로 변경해주는 handler
+```
 
-**Requirements:**
-- Code block illustrating common usage.
-- If CLI compatible, code block indicating common usage.
-- If importable, code block indicating both import functionality and usage.
+### 📚 COLOR
 
-**Subsections:**
-- `CLI`. Required if CLI functionality exists.
+- #4285f4 메인 블루 (header, titlebar 등-)
+- #fc674e 과실 벳지 color
+- #00993e 작물 벳지 color
 
-**Suggestions:**
-- Cover basic choices that may affect usage: for instance, if JavaScript, cover promises/callbacks, ES6 here.
-- If relevant, point to a runnable file for the usage code.
+### 📚 FONT
 
-### Extra Sections
-**Status**: Optional.
-
-**Requirements:**
-- None.
-
-**Suggestions:**
-- This should not be called `Extra Sections`. This is a space for 0 or more sections to be included, each of which must have their own titles.
-- This should contain any other sections that are relevant, placed after [Usage](#usage) and before [API](#api).
-- Specifically, the [Security](#security) section should be here if it wasn't important enough to be placed above.
-
-### API
-**Status:** Optional.
-
-**Requirements:**
-- Describe exported functions and objects.
-
-**Suggestions:**
-- Describe signatures, return types, callbacks, and events.
-- Cover types covered where not obvious.
-- Describe caveats.
-- If using an external API generator (like go-doc, js-doc, or so on), point to an external `API.md` file. This can be the only item in the section, if present.
-
-### Maintainer(s)
-**Status**: Optional.
-
-**Requirements:**
-- Must be called `Maintainer` or `Maintainers`.
-- List maintainer(s) for a repository, along with one way of contacting them (e.g. GitHub link or email).
-
-**Suggestions:**
-- This should be a small list of people in charge of the repo. This should not be everyone with access rights, such as an entire organization, but the people who should be pinged and who are in charge of the direction and maintenance of the repository.
-- Listing past maintainers is good for attribution, and kind.
-
-### Thanks
-**Status**: Optional.
-
-**Requirements:**
-- Must be called `Thanks`, `Credits` or `Acknowledgements`.
-
-**Suggestions:**
-- State anyone or anything that significantly helped with the development of your project.
-- State public contact hyper-links if applicable.
-
-### Contributing
-**Status**: Required.
-
-**Requirements:**
-- State where users can ask questions.
-- State whether PRs are accepted.
-- List any requirements for contributing; for instance, having a sign-off on commits.
-
-**Suggestions:**
-- Link to a CONTRIBUTING file -- if there is one.
-- Be as friendly as possible.
-- Link to the GitHub issues.
-- Link to a Code of Conduct. A CoC is often in the Contributing section or document, or set elsewhere for an entire organization, so it may not be necessary to include the entire file in each repository. However, it is highly recommended to always link to the code, wherever it lives.
-- A subsection for listing contributors is also welcome here.
-
-### License
-**Status:** Required.
-
-**Requirements:**
-- State license full name or identifier, as listed on the  [SPDX](https://spdx.org/licenses/) license list. For unlicensed repositories, add `UNLICENSED`. For more details, add `SEE LICENSE IN <filename>` and link to the license file. (These requirements were adapted from [npm](https://docs.npmjs.com/files/package.json#license)).
-- State license owner.
-- Must be last section.
-
-**Suggestions:**
-- Link to longer License file in local repository.
-
-## Definitions
-
-_These definitions are provided to clarify any terms used above._
-
-- **Documentation repositories**: Repositories without any functional code. For instance, [RichardLitt/knowledge](https://github.com/RichardLitt/knowledge).
+- NanumbarunGothic 폰트 : 기본 폰트
+- 10px 을 기준으로 rem단위 사용 ex) 15px -> 1.5rem
