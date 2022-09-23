@@ -3,14 +3,10 @@ import gravatar from "gravatar";
 import { BsThreeDotsVertical, BsChatDotsFill } from "react-icons/bs";
 import { Link, useParams } from "react-router-dom";
 import { IUser } from "@typings/db";
-import { useQuery } from "react-query";
-import fetcher from "@utils/fetcher";
 
 interface Props {
   myChatters: IUser[] | undefined;
   myDataId: number;
-  /*   onModalShow: (email: string) => void;
-   */ // onInviteWsHandler: (memberId: string) => void;
 }
 
 const ChatterList: FC<Props> = ({ myChatters, myDataId }) => {
@@ -32,9 +28,7 @@ const ChatterList: FC<Props> = ({ myChatters, myDataId }) => {
               key={`$chatter--${idx}`}
             >
               <Link
-                to={`/workspace/${workspace ? workspace : "chatterbox"}/dms/${
-                  chatter.id
-                }/chats`}
+                to={`/workspace/chatterbox/dms/${chatter.id}/chats`}
                 className="center-vertical"
               >
                 <span className="profile-img">

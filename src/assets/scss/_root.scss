@@ -1,3 +1,5 @@
+@use 'media-query' as media;
+
 /* 
   ### Note: 
   1. @use는 @import랑 비슷한 개념인데 import와는 달리 접근자로 특정 스타일에 접근 가능해서 import 보다 안전 
@@ -44,4 +46,24 @@
       hsla(240, calc(var(--saturation-factor, 1) * 11.1%), 1.8%, 0.2),
     0 1.5px 0 hsla(240, calc(var(--saturation-factor, 1) * 7.7%), 2.5%, 0.05),
     0 2px 0 hsla(240, calc(var(--saturation-factor, 1) * 11.1%), 1.8%, 0.05);
+}
+
+@include media.tablet {
+  :root {
+    --font-family: "Noto Sans KR", sans-serif;
+    --meeting-footer-height: 10.5rem;
+    --chat-width: 100vw;
+  }
+}
+
+@include media.mobile {
+  :root {
+    --font-size: 8px;
+  }
+}
+
+@include media.smallMobile {
+  :root {
+    --font-size: 6px;
+  }
 }

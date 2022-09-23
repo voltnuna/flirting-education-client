@@ -35,9 +35,7 @@ const ChannelChat = () => {
         queryKey: `http://localhost:3095/api/workspaces/${workspace}/channels/${channel}`,
       })
   );
-  const { data: chatData, fetchNextPage, hasNextPage } = useInfiniteQuery<
-    IChat[]
-  >(
+  const { data: chatData } = useInfiniteQuery<IChat[]>(
     ["workspace", workspace, "channel", channel, "chat"],
     ({ pageParam }) =>
       fetcher({
@@ -52,23 +50,8 @@ const ChannelChat = () => {
     }
   );
 
-  const { data: channelMembersData } = useQuery<IUser[]>(
-    ["workspace", workspace, "channel", channel, "member"],
-    () =>
-      fetcher({
-        queryKey: `http://localhost:3095/api/workspaces/${workspace}/channels/${channel}/members`,
-      }),
-    {
-      enabled: !!myData,
-    }
-  );
-  const [socket] = useSocket(workspace);
-  console.log(chatData);
   const isEmpty = chatData?.pages && chatData?.pages[0]?.length === 0;
-  const isReachingEnd =
-    isEmpty ||
-    (chatData && chatData.pages[chatData.pages.length - 1]?.length < 20) ||
-    false;
+
   const scrollbarRef = useRef<Scrollbars>(null);
   const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
   const [dragOver, setDragOver] = useState(false);
@@ -167,24 +150,6 @@ const ChannelChat = () => {
     [channel, myData, queryClient, workspace]
   );
 
-  useEffect(() => {
-    socket?.on("message", onMessage);
-    return () => {
-      socket?.off("message", onMessage);
-    };
-  }, [socket, onMessage]);
-
-  // 로딩 시 스크롤바 제일 아래로
-  useEffect(() => {
-    if (chatData?.pages.length === 1) {
-      console.log("toBottomWhenLoaded", scrollbarRef.current);
-      setTimeout(() => {
-        console.log("scrollbar", scrollbarRef.current);
-        scrollbarRef.current?.scrollToBottom();
-      }, 500);
-    }
-  }, [chatData]);
-
   const onClickInviteChannel = useCallback(() => {
     setShowInviteChannelModal(true);
   }, []);
@@ -204,9 +169,6 @@ const ChannelChat = () => {
     },
     [chat, onSubmitChatHandler]
   );
-  /*   if (!myData || !chatData) {
-    return null;
-  } */
 
   const chatSections = makeSection(
     chatData ? chatData.pages.flat().reverse() : []
@@ -217,12 +179,7 @@ const ChannelChat = () => {
       <div className="chat-area">
         {myData && chatData && (
           <div className="balloons-wrap scrollbar">
-            <ChatList
-              myId={myData?.id}
-              chatSections={chatSections}
-              fetchNext={fetchNextPage}
-              isReachingEnd={isReachingEnd}
-            />
+            <ChatList myId={myData?.id} chatSections={chatSections} />
           </div>
         )}
         <div className="chatbox-wrapper">

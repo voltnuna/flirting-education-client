@@ -160,12 +160,7 @@ const ChattingRoom = () => {
     <>
       <div className="chat-area">
         <div className="balloons-wrap scrollbar">
-          <ChatList
-            myId={myData.id}
-            chatSections={chatSections}
-            fetchNext={fetchNextPage}
-            isReachingEnd={isReachingEnd}
-          />
+          <ChatList myId={myData.id} chatSections={chatSections} />
         </div>
         <div className="chatbox-wrapper">
           <form action="" onSubmit={onSubmitChatHandler} className="in-a-row">
