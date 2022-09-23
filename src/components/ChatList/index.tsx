@@ -1,21 +1,13 @@
 import { IDM, IChat } from "@typings/db";
 import React, { useCallback, forwardRef, MutableRefObject, FC } from "react";
-import { InfiniteQueryObserverResult } from "react-query";
 import gravatar from "gravatar";
 
 interface Props {
   chatSections: { [key: string]: (IDM | IChat)[] };
-  fetchNext: () => Promise<InfiniteQueryObserverResult>;
-  isReachingEnd: boolean;
   myId: number;
 }
 
-const ChatList: FC<Props> = ({
-  chatSections,
-  fetchNext,
-  isReachingEnd,
-  myId,
-}) => {
+const ChatList: FC<Props> = ({ chatSections, myId }) => {
   return (
     <>
       {Object.entries(chatSections).map(([date, chats], idx) => {

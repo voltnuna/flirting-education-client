@@ -9,7 +9,6 @@ import { IChannel, IUser, IWorkspace } from "@typings/db";
 import { useQuery, useQueryClient } from "react-query";
 import axios, { AxiosError } from "axios";
 
-import useSocket from "@hooks/useSocket";
 import gravatar from "gravatar";
 
 import { IoSearch } from "react-icons/io5";
@@ -17,11 +16,11 @@ import { BiHomeHeart } from "react-icons/bi";
 import { MdOutlineAdd } from "react-icons/md";
 import { FaPowerOff } from "react-icons/fa";
 
-import ChannelChat from "@pages/ChannelChat";
 import ChatterList from "@components/ChatterList";
 import Header from "@components/Header";
 import WorkspaceList from "@components/WorkspaceList";
-import { wsLists } from "@assets/dummy";
+import { wsLists } from "@assets/ts/dummy";
+import ChannelChat from "@pages/ChannelChat";
 
 const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
@@ -36,7 +35,6 @@ const Workspace = () => {
     id?: string;
   }>();
 
-  const [socket, disconnect] = useSocket(workspace);
   const [onlineList, setOnlineList] = useState<number[]>([]);
 
   const { isLoading, data: userData } = useQuery("users", () =>
@@ -67,30 +65,6 @@ const Workspace = () => {
       }/members`,
     })
   );
-
-  useEffect(() => {
-    if (channelData && userData && socket) {
-      socket?.emit("login", {
-        id: userData.id,
-        channels: channelData.map((v) => v.id),
-      });
-    }
-  }, [socket, channelData, userData, wsMembersData]);
-
-  useEffect(() => {
-    return () => {
-      disconnect();
-    };
-  }, [workspace, disconnect]);
-
-  useEffect(() => {
-    socket?.on("onlineList", (data: number[]) => {
-      setOnlineList(data);
-    });
-    return () => {
-      socket?.off("onlineList");
-    };
-  }, [socket, userData, wsMembersData, setOnlineList]);
 
   useEffect(() => {
     setOnlineList([]);
@@ -302,7 +276,7 @@ const Workspace = () => {
                   ? `#${channel}`
                   : workspace
                   ? `#${workspace}`
-                  : "Flirting School"
+                  : "Flirting Education💕"
               }
             />
             <div className="channel-body">
@@ -321,7 +295,7 @@ const Workspace = () => {
                       >
                         <input
                           type="text"
-                          placeholder="검색하기"
+                          placeholder="그룹 찾기"
                           value={searchUser}
                           onChange={onChangeSearchUser}
                         />
@@ -329,7 +303,7 @@ const Workspace = () => {
                           <IoSearch size="16" />
                         </button>
                       </form>
-                      <p>모든 친구 - {filteredUser?.length}명</p>
+                      <p></p>
                     </div>
 
                     <WorkspaceList WsList={wsLists} />
@@ -338,9 +312,9 @@ const Workspace = () => {
               </div>
               {/* onlineList */}
               <div className="channel-body__right float-right">
-                <span className="h3">연애 랭킹 👑</span>
+                <span className="h3">플러터 랭킹 👑</span>
                 <div style={{ margin: "1rem 0" }}>
-                  <p>연애고민 해결사 파워 랭킹</p>
+                  <p>연애고민 해결사 랭킹</p>
                 </div>
                 <ul className="list-vertical" style={{ margin: "2rem 0" }}>
                   <div

@@ -28,7 +28,12 @@ const WorkspaceList: FC<Props> = ({ WsList }) => {
                   {ws.verifyage}
                 </span>
               </div>
-              <div className="ws--summary">{ws.greeting}</div>
+              <div className="ws--summary">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Eligendi, corporis dolorem aliquid exercitationem eum
+                voluptatum, quasi suscipit repellat impedit iusto iure
+                dignissimos a expedita commodi vero sapiente aut. Rerum, itaque.
+              </div>
             </li>
           );
         })}

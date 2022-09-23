@@ -2,7 +2,6 @@ import { IChannel } from "@typings/db";
 import fetcher from "@utils/fetcher";
 import React, { useCallback, useRef, FC, useState } from "react";
 import { SiSharp } from "react-icons/si";
-import { useQuery } from "react-query";
 
 import {
   Link,
