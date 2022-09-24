@@ -86,7 +86,7 @@ const Login = () => {
   }, [setShowPwModal]);
 
   if (isLoading) {
-    return <div>로딩중...</div>;
+    return <div className="spinner">Loading...</div>;
   }
 
   if (userData) {

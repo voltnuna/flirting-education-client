@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Navigate, Routes, Route, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
-import useToggle from "@hooks/useToggle";
+import useBoolean from "@hooks/useBoolean";
 import useInput from "@hooks/useInput";
 import loadable from "@loadable/component";
 import fetcher from "@utils/fetcher";
@@ -16,12 +16,12 @@ import { BiHomeHeart } from "react-icons/bi";
 import { MdOutlineAdd } from "react-icons/md";
 import { FaPowerOff } from "react-icons/fa";
 
-import ChatterList from "@components/ChatterList";
-import Header from "@components/Header";
-import WorkspaceList from "@components/WorkspaceList";
 import { wsLists } from "@assets/ts/dummy";
 import ChannelChat from "@pages/ChannelChat";
 
+const WorkspaceList = loadable(() => import("@components/WorkspaceList"));
+const Header = loadable(() => import("@components/Header"));
+const ChatterList = loadable(() => import("@components/ChatterList"));
 const ChannelList = loadable(() => import("@components/ChannelList"));
 const FormModal = loadable(() => import("@components/FormModal"));
 const ChattingRoom = loadable(() => import("@pages/ChattingRoom"));
@@ -70,25 +70,28 @@ const Workspace = () => {
     setOnlineList([]);
   }, [workspace]);
 
-  const [openList, setValue, setTrue, setFalse, toggle] = useToggle(false);
+  const [showAddWsModal, setShowAddWsModal] = useState(false);
+  const [showAdChannelModal, setShowAdChannelModal] = useState(false);
+  const [openList, , , , toggle] = useBoolean(false);
+  const [filteredUser, setFilteredUser] = useState(wsMembersData);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkpsace] = useInput("");
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
-  const [showAddWsModal, setShowAddWsModal] = useState(false);
   const [newChannel, onChangeNewChannel, setNewChannel] = useInput("");
-  const [showAdChannelModal, setShowAdChannelModal] = useState(false);
   const [searchUser, onChangeSearchUser, setSearchUser] = useInput("");
-  const [filteredUser, setFilteredUser] = useState(wsMembersData);
 
   const onAddChannelHandler = useCallback(() => {
     setShowAdChannelModal(true);
   }, [setShowAdChannelModal]);
+
   const onCloseModalHandler = useCallback(() => {
     setShowAddWsModal(false);
     setShowAdChannelModal(false);
   }, [setShowAddWsModal]);
+
   const addWorkSpaceModalHandler = useCallback(() => {
     setShowAddWsModal(true);
   }, [setShowAddWsModal]);
+
   const onCreateWorkspace = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -180,7 +183,7 @@ const Workspace = () => {
   );
 
   if (isLoading) {
-    return <div>워크스페이스 로딩중...</div>;
+    return <div className="spinner">Loading...</div>;
   }
   if (!userData) {
     return <Navigate to="/login" />;
@@ -189,7 +192,8 @@ const Workspace = () => {
   return (
     <>
       <div className="float-clear" style={{ height: "100vh" }}>
-        <section className="left-panel float-left">
+        {/* S: SIDEBAR AREA */}
+        <section className="sidebar-panel float-left">
           <ul>
             <li
               id="ws-home"
@@ -228,7 +232,9 @@ const Workspace = () => {
           </ul>
         </section>
 
-        <section className="right-panel float-right float-clear">
+        {/* S: RIGHT SIDE */}
+        <section className="contents-panel float-right float-clear">
+          {/* LEFT AREA */}
           <div className="float-left side-panel">
             <div className="head-label">
               <button> 대화 찾기 또는 시작하기 </button>
@@ -267,6 +273,7 @@ const Workspace = () => {
               </button>
             </div>
           </div>
+          {/* PAGE AREA */}
           <div className="content-panel float-right float-clear">
             <Header
               title={
@@ -285,7 +292,7 @@ const Workspace = () => {
                 {workspace === "chatterbox" && id ? (
                   <ChattingRoom />
                 ) : (channel && !id) || (workspace && !channel) ? (
-                  <div>채널 채팅 페이지 준비중입니다</div>
+                  <ChannelHome />
                 ) : (
                   <>
                     <div className="search-area">
@@ -303,9 +310,8 @@ const Workspace = () => {
                           <IoSearch size="16" />
                         </button>
                       </form>
-                      <p></p>
                     </div>
-
+                    {/*  */}
                     <WorkspaceList WsList={wsLists} />
                   </>
                 )}
@@ -335,6 +341,9 @@ const Workspace = () => {
           </div>
         </section>
       </div>
+
+      {/* S: MODAL  */}
+
       {/* 워크스페이스 추가 모달 */}
       <FormModal
         title="워크스페이스 생성"
