@@ -16,7 +16,7 @@ type ReturnType<T> = [
   () => void
 ];
 
-const useToggle = <T>(defaultValue?: boolean): ReturnType<T> => {
+const useBoolean = <T>(defaultValue?: boolean): ReturnType<T> => {
   const [value, setValue] = useState(!!defaultValue);
 
   const setTrue = useCallback(() => setValue(true), []);
@@ -26,4 +26,4 @@ const useToggle = <T>(defaultValue?: boolean): ReturnType<T> => {
   return [value, setValue, setTrue, setFalse, toggle];
 };
 
-export default useToggle;
+export default useBoolean;

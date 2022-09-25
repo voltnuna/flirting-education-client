@@ -1,7 +1,7 @@
 @use '../variables' as var;
 @use "../mixin" as mixin;
 
-.left-panel {
+.sidebar-panel {
   width: 7.2rem;
   height: 100vh;
   background-color: var(--darkest-gray);
@@ -42,7 +42,7 @@
   }
 }
 
-.right-panel {
+.contents-panel {
   width: calc(100% - 7.2rem);
   height: 100vh;
   .side-panel {
@@ -153,6 +153,7 @@
         hsla(217, calc(var(--saturation-factor, 1) * 7.6%), 33.5%, 0.48);
     }
   }
+
   &__right {
     width: 26.027%;
     height: 100%;
