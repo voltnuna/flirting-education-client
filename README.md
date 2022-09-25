@@ -13,11 +13,8 @@ _Note: This is only a navigation guide for the specification, and does not defin
 - [Sections](#sections)
   - 📚 [FILE STRUCTURE](#file-structure)
   - 👀 [Preview](#preview)
-  - [Install](#install)
-  - [Usage](#usage)
-  - [API](#api)
-  - [Maintainers](#maintainers)
-  - [Contributing](#contributing)
+  - 🛠 [Usage](#usage)
+  - 👧‍👦 [Contributing](#contributing)
   - [License](#license)
 - [Definitions](#definitions)
 
@@ -54,6 +51,8 @@ _Note: This is only a navigation guide for the specification, and does not defin
 
 ### 👀PREVIEW
 
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/57129686/192136718-c8bec531-4f0a-4d49-aac1-98c6215df769.gif)
+
 
 ### 🛠Usage
 
@@ -62,3 +61,7 @@ _Note: This is only a navigation guide for the specification, and does not defin
   cd client
   npm run electron
 ```
+
+### 👩‍👩‍👧‍👦contributing
+
+- Frontend: kimdoeun😎
