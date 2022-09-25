@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-
+import backimg from "@assets/images/backimg.jpg";
 interface Props {
   WsList: {
     wsname: string;
@@ -15,7 +15,10 @@ const WorkspaceList: FC<Props> = ({ WsList }) => {
       <ul className="ws--lists scrollbar">
         {WsList?.map((ws, idx) => {
           return (
-            <li key={`ws-${ws.wsname}--${ws.category}${idx}`}>
+            <li
+              className="vertical"
+              key={`ws-${ws.wsname}--${ws.category}${idx}`}
+            >
               <div className="float-clear ws--title">
                 <span className="h3">{ws.wsname}</span>
                 <span
@@ -28,6 +31,7 @@ const WorkspaceList: FC<Props> = ({ WsList }) => {
                   {ws.verifyage}
                 </span>
               </div>
+
               <div className="ws--summary">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                 Eligendi, corporis dolorem aliquid exercitationem eum

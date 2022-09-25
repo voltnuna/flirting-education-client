@@ -115,10 +115,13 @@
   }
 }
 
+.vertical + .ws--lists li {
+  width: 100%;
+}
 .ws--lists {
   cursor: pointer;
   display: inline-flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
   width: 100%;
   height: calc(100% - 17rem);
@@ -128,15 +131,16 @@
 
   li {
     display: inline-block;
-    width: 30%;
-    height: 30rem;
-    margin: 1rem;
+    width: 23.5%;
+    height: auto;
     padding: 2rem;
+    margin: 0.7rem;
     border-radius: 1rem;
     background-color: #eee;
+    transition: 0.3s;
     box-shadow: 0.1rem 0.1rem 0.7rem rgba($color: #090909, $alpha: 0.8);
-    //   background-image: url(../../images/backimg.jpg);
-    background-color: #3c3f45;
+    background-color: var(--darkest-gray);
+    background: url(../../images/backimg.jpg);
   }
 
   li:hover {
@@ -147,6 +151,7 @@
     color: #090909;
     margin-bottom: 1rem;
   }
+
   .ws--title {
     color: #090909;
     margin-bottom: 3rem;

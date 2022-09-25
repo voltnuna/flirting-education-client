@@ -15,6 +15,8 @@ import { IoSearch } from "react-icons/io5";
 import { BiHomeHeart } from "react-icons/bi";
 import { MdOutlineAdd } from "react-icons/md";
 import { FaPowerOff } from "react-icons/fa";
+import { CgMenuGridR } from "react-icons/cg";
+import { HiMenu } from "react-icons/hi";
 
 import { wsLists } from "@assets/ts/dummy";
 import ChannelChat from "@pages/ChannelChat";
@@ -78,6 +80,8 @@ const Workspace = () => {
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput("");
   const [newChannel, onChangeNewChannel, setNewChannel] = useInput("");
   const [searchUser, onChangeSearchUser, setSearchUser] = useInput("");
+
+  const [vertical, , setVerticalTrue, setVerticalFalse, ,] = useBoolean(false);
 
   const onAddChannelHandler = useCallback(() => {
     setShowAdChannelModal(true);
@@ -295,7 +299,13 @@ const Workspace = () => {
                   <ChannelHome />
                 ) : (
                   <>
-                    <div className="search-area">
+                    <div
+                      className={
+                        !vertical
+                          ? "search-area float-clear"
+                          : "vertical search-area float-clear"
+                      }
+                    >
                       <form
                         className="search-form"
                         onSubmit={onSearchUserHandler}
@@ -310,8 +320,18 @@ const Workspace = () => {
                           <IoSearch size="16" />
                         </button>
                       </form>
+                      <div
+                        className="float-right"
+                        style={{ padding: "2rem 3rem 0" }}
+                      >
+                        <button type="button" onClick={setVerticalFalse}>
+                          <CgMenuGridR color="white" fontSize={20} />
+                        </button>
+                        <button type="button" onClick={setVerticalTrue}>
+                          <HiMenu color="white" fontSize={20} />
+                        </button>
+                      </div>
                     </div>
-                    {/*  */}
                     <WorkspaceList WsList={wsLists} />
                   </>
                 )}
@@ -344,9 +364,9 @@ const Workspace = () => {
 
       {/* S: MODAL  */}
 
-      {/* 워크스페이스 추가 모달 */}
+      {/* 클래스 추가 모달 : Admin일 때만 Show */}
       <FormModal
-        title="워크스페이스 생성"
+        title="Create Category"
         onCloseModalHandler={onCloseModalHandler}
         show={showAddWsModal}
       >
@@ -354,7 +374,7 @@ const Workspace = () => {
           <div className="modal__body">
             <div className="modal__content">
               <div className="input-form">
-                <label>워크스페이스 이름</label>
+                <label>Category Title</label>
                 <input
                   type="text"
                   className="fullsize"
@@ -363,7 +383,7 @@ const Workspace = () => {
                 />
               </div>
               <div className="input-form">
-                <label>워크스페이스 주소</label>
+                <label>Category Url</label>
                 <input
                   type="text"
                   className="fullsize"
@@ -375,14 +395,14 @@ const Workspace = () => {
           </div>
           <div className="modal__footer">
             <button type="submit" className="btn-regist">
-              등록
+              Submit
             </button>
           </div>
         </form>
       </FormModal>
       {/* 채널 추가 모달 */}
       <FormModal
-        title="채널 생성"
+        title="Create Channel"
         onCloseModalHandler={onCloseModalHandler}
         show={showAdChannelModal}
       >
@@ -390,13 +410,32 @@ const Workspace = () => {
           <div className="modal__body">
             <div className="modal__content">
               <div className="input-form">
-                <label>채널 이름</label>
+                <label>Channel Title</label>
                 <input
                   type="text"
                   className="fullsize"
                   value={newChannel}
                   onChange={onChangeNewChannel}
                 />
+              </div>
+
+              <div className="terms float-clear">
+                <strong className="h5">Terms</strong>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Nesciunt et, perspiciatis minus doloremque tempore quidem
+                  adipisci, voluptate temporibus voluptates minima praesentium
+                  reiciendis expedita fugit, deserunt dolorem suscipit hic omnis
+                  eum!
+                </p>
+                <div className="radio-wrap float-right">
+                  <label htmlFor="joinAgree">Agree</label>
+                  <input id="joinAgree" type="radio" name="joinchannel" />
+                </div>
+                <div className="radio-wrap float-right">
+                  <label htmlFor="joinDisAgree">Disagree</label>
+                  <input id="joinDisAgree" type="radio" name="joinchannel" />
+                </div>
               </div>
             </div>
           </div>
