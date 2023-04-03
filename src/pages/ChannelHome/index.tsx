@@ -68,7 +68,11 @@ const ChannelHome: FC<Props> = ({ wsMembersData }) => {
       });
   }, []);
 
-  return <></>;
+  return (
+    <>
+      <ul>{<li></li>}</ul>
+    </>
+  );
 };
 
 export default ChannelHome;
