@@ -1,4 +1,4 @@
-@use '../variables' as var;
+@use "../variables" as var;
 @use "../mixin" as mixin;
 
 .sidebar-panel {
@@ -103,6 +103,7 @@
     width: 16rem;
     text-align: left;
     font-size: 1.2rem;
+    padding-left: 1rem;
   }
   button {
     font-size: 2rem;

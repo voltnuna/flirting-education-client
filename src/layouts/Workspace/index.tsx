@@ -284,7 +284,7 @@ const Workspace = () => {
                 id
                   ? "Direct Message"
                   : channel
-                  ? `#${channel}`
+                  ? `#${channel} 채널`
                   : workspace
                   ? `#${workspace}`
                   : "Flirting Education💕"

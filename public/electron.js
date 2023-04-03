@@ -4,9 +4,9 @@ var electron_1 = require("electron");
 var isDev = require("electron-is-dev");
 var path = require("path");
 var mainWindow;
-var createWindow = function() {
+var createWindow = function () {
   mainWindow = new electron_1.BrowserWindow({
-    width: 1800,
+    width: 1609,
     height: 920,
     center: true,
     kiosk: !isDev,
@@ -24,7 +24,7 @@ var createWindow = function() {
   // 개발 중에는 개발 도구에서 호스팅하는 주소에서 로드.
   mainWindow.loadURL(
     isDev
-      ? "http://localhost:3000"
+      ? "http://localhost:9903"
       : "file://".concat(path.join(__dirname, "../build/index.html"))
   );
   if (isDev) {
@@ -32,7 +32,7 @@ var createWindow = function() {
   }
   mainWindow.setResizable(true);
   // Emitted when the window is closed.
-  mainWindow.on("closed", function() {
+  mainWindow.on("closed", function () {
     return (mainWindow = undefined);
   });
   mainWindow.focus();
@@ -42,12 +42,12 @@ var createWindow = function() {
 // Some APIs can only be used after this event occurs.
 electron_1.app.on("ready", createWindow);
 // Quit when all windows are closed.
-electron_1.app.on("window-all-closed", function() {
+electron_1.app.on("window-all-closed", function () {
   if (process.platform !== "darwin") {
     electron_1.app.quit();
   }
 });
-electron_1.app.on("activate", function() {
+electron_1.app.on("activate", function () {
   if (mainWindow === null) {
     createWindow();
   }
